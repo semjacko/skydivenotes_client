@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {MaterialIcons} from '@expo/vector-icons';
 
-import {stackStyle} from '../styles';
+import {stackStyle, styleColors} from '../styles';
 import {Settings} from '../screens/settings';
 import {Profile} from '../screens/profile';
 
@@ -24,12 +24,12 @@ const ProfileNavigation = ({route}) => {
                     title: 'Profil',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={'#000000'} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorContent} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { navigation.navigate('settings'); }} >
-                            <MaterialIcons name={'edit'} size={30} color={'#000000'} />
+                            <MaterialIcons name={'edit'} size={30} color={styleColors.textColorContent} />
                         </TouchableOpacity>
                     )
                 })}

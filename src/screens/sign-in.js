@@ -47,7 +47,7 @@ const SignInContainer = (props) => {
                     <View style={{alignItems: 'flex-start'}}>
                         <Text style={styles.text1}>Email</Text>
                         <View style={styles.signInput}>
-                            <MaterialIcons name="alternate-email" size={20} color="#000000" />
+                            <MaterialIcons name="alternate-email" size={20} color={styleColors.textColorContent}/>
                             <TextInput 
                                 placeholder={'Tvoj email'}
                                 placeholderTextColor={styleColors.grayColor}
@@ -65,7 +65,7 @@ const SignInContainer = (props) => {
                     <View style={{alignItems: 'flex-start', marginTop: 35}}>
                         <Text style={styles.text1}>Heslo</Text>
                         <View style={styles.signInput}>
-                            <Feather name={'lock'} color={'#000000'} size={20}/>
+                            <Feather name={'lock'} color={styleColors.textColorContent} size={20}/>
                             <TextInput
                                 placeholder={'Tvoje heslo'}
                                 placeholderTextColor={styleColors.grayColor}
@@ -95,7 +95,7 @@ const SignInContainer = (props) => {
                         style={{marginTop: 30, backgroundColor: styleColors.mainColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 5}} 
                         onPress={handleSignIn}
                     >
-                        <Text style={[styles.text2, {color: '#ffffff'}]}>Prihlásiť</Text>
+                        <Text style={[styles.text2, {color: styleColors.textColorSpecial}]}>Prihlásiť</Text>
                     </TouchableOpacity>
                     <View style={{marginTop: 50, alignItems: 'center'}}>
                         <Text style={styles.text1}>Este nemate ucet?</Text>

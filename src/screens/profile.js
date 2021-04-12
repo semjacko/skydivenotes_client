@@ -9,7 +9,7 @@ const LabeledValue = ({label, value, align}) => {
     return (
         <View style={{alignItems: align}}>
             <Text style={styles.label}>{label}</Text>
-            <Text style={styles.textBlack1}>{value}</Text>
+            <Text style={styles.text1}>{value}</Text>
         </View>
     );
 }
@@ -67,11 +67,11 @@ const ProfileContainer = (props) => {
                 <View style={styles.profileMainInfo}>
                     {/* LICENCIA begin */}
                     <View style={styles.circle}>
-                        <Text style={styles.textBlack3}>{user['license']}</Text>
+                        <Text style={[styles.text4, {fontWeight: 'bold'}]}>{user['license']}</Text>
                     </View>
                     {/* LICENCIA end */}
                     {/* ZOSKOKY INFO begin */}
-                    <Text style={[styles.textBlack2, {marginTop: 15}]}>{user['fullname']}</Text>
+                    <Text style={[styles.text2, {marginTop: 15}]}>{user['fullname']}</Text>
                     <View style={styles.profileJumpInfo}>
                         <LabeledValue label={'Zoskoky'} value={254} align={'center'}/>
                         <LabeledValue label={'Voľný pád'} value={'1:30:40'} align={'center'}/>

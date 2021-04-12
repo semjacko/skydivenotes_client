@@ -4,7 +4,7 @@ import {Text, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import {stackStyle, tabStyle} from '../styles';
+import {stackStyle, tabStyle, styleColors} from '../styles';
 import {Parachutes} from '../screens/parachutes';
 import {Planes} from '../screens/planes';
 import {Dropzones} from '../screens/dropzones';
@@ -94,12 +94,12 @@ const ParachutesTopMenu = ({route}) => {
                     title: 'Moje padáky',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={'#000000'} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit(`AddParachutePressed`) }} >
-                            <MaterialIcons name={'add'} size={30} color={'#000000'} />
+                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     )
                 })}
@@ -120,12 +120,12 @@ const DropzonesTopMenu = ({route}) => {
                     title: 'Moje letiská',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={'#000000'} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit(`AddDropzonePressed`) }} >
-                            <MaterialIcons name={'add'} size={30} color={'#000000'} />
+                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     )
                 })}
@@ -146,12 +146,12 @@ const PlanesTopMenu = ({route}) => {
                     title: 'Moje lietadlá',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={'#000000'} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit(`AddPlanePressed`) }} >
-                            <MaterialIcons name={'add'} size={30} color={'#000000'} />
+                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     )
                 })}
@@ -171,12 +171,12 @@ const CategoriesTopMenu = ({route}) => {
                     title: 'Moje kategórie',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={'#000000'} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit(`AddCategoryPressed`) }} >
-                            <MaterialIcons name={'add'} size={30} color={'#000000'} />
+                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     )
                 })}

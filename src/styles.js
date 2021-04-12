@@ -2,8 +2,12 @@ import {StyleSheet} from 'react-native';
 
 const styleColors = {
     bgColor: '#dfdfdf',
-    mainColor: '#00ba95',
+    mainColor: '#d1c000',
     secondColor: '#afafaf',
+    textColorContent: '#000000',
+    textColorSpecial: '#ffffff',
+    red: '#ff0000',
+    green: '#00ff00',
     grayColor: '#bfbfbf',
 };
 
@@ -17,7 +21,7 @@ const stackStyle = {
     headerRightContainerStyle: {
         paddingRight: 10,
     },
-    headerTintColor: '#ffffff',
+    headerTintColor: styleColors.textColorSpecial,
     headerTitleStyle: {
         fontWeight: 'normal',
     },
@@ -25,7 +29,7 @@ const stackStyle = {
 
 const tabStyle = {
     activeTintColor: styleColors.mainColor,
-    inactiveTintColor: '#707070',
+    inactiveTintColor: styleColors.grayColor,
     style: {
         height: 60,
         paddingBottom: 5,
@@ -39,20 +43,24 @@ const styles = StyleSheet.create({
         backgroundColor: styleColors.bgColor,
     },
     textError: {
-        color: '#FF0000',
+        color: styleColors.red,
         fontSize: 14,
     },
     text1: {
         fontSize: 16,
-        color: '#000000',
+        color: styleColors.textColorContent,
     },
     text2: {
         fontSize: 20,
-        color: '#000000',
+        color: styleColors.textColorContent,
     },
     text3: {
         fontSize: 24,
-        color: '#000000',
+        color: styleColors.textColorContent,
+    },
+    text4: {
+        fontSize: 28,
+        color: styleColors.textColorContent,
     },
     signInput: {
         alignItems: 'flex-end',
@@ -65,7 +73,7 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         paddingLeft: 10,
-        color: '#05375a',
+        color: styleColors.textColorContent,
     },
 
 
@@ -168,7 +176,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 12,
-        color: '#707070',
+        color: styleColors.grayColor,
     },
     recordsItem: {
         alignItems: 'flex-start',

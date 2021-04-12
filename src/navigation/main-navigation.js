@@ -29,8 +29,8 @@ const CustomDrawerContent = (props) => {
             {/* NAVIGACIA begin */}
             <DrawerItemList
                 {...props}
-                activeTintColor={'white'}
-                inactiveTintColor={'black'}
+                activeTintColor={styleColors.textColorSpecial}
+                inactiveTintColor={styleColors.textColorContent}
                 activeBackgroundColor={styleColors.mainColor}
             />
             {/* NAVIGACIA end */}

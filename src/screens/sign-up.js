@@ -108,7 +108,7 @@ const SignUpContainer = (props) => {
                     <View style={{alignItems: 'flex-start'}}>
                         <Text style={styles.text1}>Meno</Text>
                         <View style={styles.signInput}>
-                            <FontAwesome name={'user-o'} color={data.fullnameEndEditing && !data.fullname ? '#ff0000' : '#000000'} size={20}/>
+                            <FontAwesome name={'user-o'} color={data.fullnameEndEditing && !data.fullname ? styleColors.red : styleColors.textColorContent} size={20}/>
                             <TextInput 
                                 placeholder={'Tvoje meno'}
                                 placeholderTextColor={styleColors.grayColor}
@@ -120,7 +120,7 @@ const SignUpContainer = (props) => {
                                 onEndEditing={handleFullnameEndEditing}
                             />
                             {data.fullname ? 
-                            <Feather name="check-circle" color={'#00ff00'} size={20} />
+                            <Feather name="check-circle" color={styleColors.green} size={20} />
                             : 
                             null
                             }
@@ -135,7 +135,7 @@ const SignUpContainer = (props) => {
                     <View style={{alignItems: 'flex-start', marginTop: 35}}>
                         <Text style={styles.text1}>Email</Text>
                         <View style={styles.signInput}>
-                            <MaterialIcons name="alternate-email" size={20} color={data.emailEndEditing && !data.emailCheck ? '#ff0000' : '#000000'} />
+                            <MaterialIcons name="alternate-email" size={20} color={data.emailEndEditing && !data.emailCheck ? styleColors.red : styleColors.textColorContent} />
                             <TextInput 
                                 placeholder={'Tvoj email'}
                                 placeholderTextColor={styleColors.grayColor}
@@ -148,7 +148,7 @@ const SignUpContainer = (props) => {
                                 onEndEditing={handleEmailEndEditing}
                             />
                             {data.emailCheck ? 
-                            <Feather name="check-circle" color="#00ff00" size={20} />
+                            <Feather name="check-circle" color={styleColors.red} size={20} />
                             : 
                             null
                             }
@@ -163,7 +163,7 @@ const SignUpContainer = (props) => {
                     <View style={{alignItems: 'flex-start', marginTop: 35}}>
                         <Text style={styles.text1}>Heslo</Text>
                         <View style={styles.signInput}>
-                            <Feather name={'lock'} color={data.passwordEndEditing && !data.passwordCheck ? '#ff0000' : '#000000'} size={20}/>
+                            <Feather name={'lock'} color={data.passwordEndEditing && !data.passwordCheck ? styleColors.red : styleColors.textColorContent} size={20}/>
                             <TextInput
                                 placeholder={'Tvoje heslo'}
                                 placeholderTextColor={styleColors.grayColor}
@@ -181,7 +181,7 @@ const SignUpContainer = (props) => {
                                 }
                             </TouchableOpacity>
                             {data.passwordCheck ? 
-                            <Feather name="check-circle" color="#00ff00" size={20} style={{marginLeft: 10}}/>
+                            <Feather name="check-circle" color={styleColors.green} size={20} style={{marginLeft: 10}}/>
                             : 
                             null
                             }
@@ -197,7 +197,7 @@ const SignUpContainer = (props) => {
                         style={{marginTop: 30, backgroundColor: styleColors.mainColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 5}} 
                         onPress={handleSignUp}
                     >
-                        <Text style={[styles.text2, {color: '#ffffff'}]}>Vytvoriť účet</Text>
+                        <Text style={[styles.text2, {color: styleColors.textColorSpecial}]}>Vytvoriť účet</Text>
                     </TouchableOpacity>
                     {/* BUTTON end */}
                 </View>
