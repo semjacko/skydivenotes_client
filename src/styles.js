@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const styleColors = {
     bgColor: '#dfdfdf',
-    mainColor: '#f5a207',
+    mainColor: '#00ba95',
     secondColor: '#afafaf',
     grayColor: '#bfbfbf',
 };
@@ -39,15 +39,15 @@ const styles = StyleSheet.create({
         backgroundColor: styleColors.bgColor,
     },
     text1: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#000000',
     },
     text2: {
-        fontSize: 22,
+        fontSize: 20,
         color: '#000000',
     },
     text3: {
-        fontSize: 26,
+        fontSize: 24,
         color: '#000000',
     },
     signInput: {
