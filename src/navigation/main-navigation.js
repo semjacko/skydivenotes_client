@@ -64,7 +64,9 @@ const MainNavigation = ({route}) => {
                 }}
             />
             {/* PROFIL end */}
-            {/* ZAZNAMY begin */}
+            
+            {/*
+            {/* ZAZNAMY begin 
             <Drawer.Screen
                 name={'records'}
                 component={RecordsNavigation}
@@ -75,8 +77,8 @@ const MainNavigation = ({route}) => {
                     )
                 }}
             />
-            {/* ZAZNAMY end */}
-            {/* MOJE begin */}
+            {/* ZAZNAMY end 
+            {/* MOJE begin 
             <Drawer.Screen
                 name={'assets'}
                 component={AssetsNavigation}

@@ -33,13 +33,47 @@ const tabStyle = {
 };
 
 const styles = StyleSheet.create({
-    sideMenu: {
-        width: 300,
-        backgroundColor: styleColors.bgColor,
-    },
     page: {
         display: 'flex',
         flex: 1,
+        backgroundColor: styleColors.bgColor,
+    },
+    text1: {
+        fontSize: 18,
+        color: '#000000',
+    },
+    text2: {
+        fontSize: 22,
+        color: '#000000',
+    },
+    text3: {
+        fontSize: 26,
+        color: '#000000',
+    },
+    signInput: {
+        alignItems: 'flex-end',
+        flexDirection: 'row',
+        marginTop: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: styleColors.grayColor,
+        paddingBottom: 5
+    },
+    textInput: {
+        flex: 1,
+        paddingLeft: 10,
+        color: '#05375a',
+    },
+
+
+
+
+
+
+
+
+
+    sideMenu: {
+        width: 300,
         backgroundColor: styleColors.bgColor,
     },
     circle: {
@@ -112,20 +146,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 15,
         marginHorizontal: 10,
-    },
-    textBlack1: {
-        fontSize: 18,
-        color: '#000000',
-    },
-    textBlack2: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000000',
-    },
-    textBlack3: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: '#000000',
     },
     textWhite1: {
         fontSize: 18,
