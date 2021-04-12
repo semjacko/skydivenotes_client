@@ -17,7 +17,7 @@ const stackStyle = {
     headerRightContainerStyle: {
         paddingRight: 10,
     },
-    headerTintColor: '#000000',
+    headerTintColor: '#ffffff',
     headerTitleStyle: {
         fontWeight: 'normal',
     },
@@ -37,6 +37,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         backgroundColor: styleColors.bgColor,
+    },
+    textError: {
+        color: '#FF0000',
+        fontSize: 14,
     },
     text1: {
         fontSize: 16,

@@ -1,24 +1,35 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, TextInput, StyleSheet, StatusBar, Alert} from 'react-native';
-import {FontAwesome, Feather} from '@expo/vector-icons';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, StatusBar, Keyboard, Alert} from 'react-native';
+import {FontAwesome, Feather, MaterialIcons} from '@expo/vector-icons';
+import {styles, styleColors} from '../styles';
+import {postToServer} from '../server';
+import {connect} from 'react-redux';
 
-const SignUp = ({navigation}) => {
-
-    const [data, setData] = React.useState({
+const SignUpContainer = (props) => {
+    const [data, setData] = useState({
+        fullname: '',
         email: '',
         password: '',
+        fullnameEndEditing: false,
         emailCheck: false,
         emailEndEditing: false,
         passwordCheck: false,
         passwordEndEditing: false,
-        secureTextEntry: true,
     });
+    const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+    const handleFullnameChange = (text) => {
+        setData({
+            ...data,
+            fullname: text.trim()
+        });
+    }
 
     const handleEmailChange = (text) => {
         const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         setData({
             ...data,
-            email: text,
+            email: text.trim(),
             emailCheck: re.test(text.trim().toLowerCase()),
         });
     }
@@ -28,6 +39,13 @@ const SignUp = ({navigation}) => {
             ...data,
             password: text,
             passwordCheck: text.trim().length >= 8
+        });
+    }
+    
+    const handleFullnameEndEditing = () => {
+        setData({
+            ...data, 
+            fullnameEndEditing: true
         });
     }
 
@@ -49,7 +67,7 @@ const SignUp = ({navigation}) => {
         let user = {
             email: data.email, 
             password: data.password,
-            fullname: 'Test User',
+            fullname: data.fullname,
             license: 'A', 
             licenseExpiration: '20200101', 
             medicalExpiration: '20200101', 
@@ -61,236 +79,133 @@ const SignUp = ({navigation}) => {
             altitude: 3000
         }
 
-        if (!data.emailCheck || !data.passwordCheck) {
+        if (!data.emailCheck || !data.passwordCheck || !data.fullname) {
+            setData({
+                ...data, 
+                fullnameEndEditing: true,
+                emailEndEditing: true,
+                passwordEndEditing: true
+            });
             return;
         }
 
-        await fetch(`http://18.196.156.172/user`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({user: user})
-        })
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json);
-                navigation.navigate('signedIn', {token: json.token});
-            })
-        // TODO get token and sign-in user
+        postToServer('http://18.196.156.172/user', {user: user}, (status, data) => {
+            if (status == 200) {
+                props.dispatch({type: 'SIGN_IN', token: data['token']})
+                props.navigation.navigate('signedIn');
+            } else {
+                Alert.alert('Email už existuje!', 'Zadaný email už v databáze existuje', [{text: 'Ok'}]);
+            }
+        });
     }
 
     return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor={styleColors.bgColor} barStyle="light-content"/>
-        <View style={styles.header}>
-            <Text style={styles.text_header}>Vitajte!</Text>
-            <Text style={styles.text_header2}>Toto je zatiaľ len testovacia verzia!!!</Text>
-        </View>
-          <View 
-            style={styles.footer}
-          >
-            <Text style={styles.text_footer}>Email</Text>
-            <View style={styles.action}>
-                <FontAwesome 
-                    name="user-o"
-                    color={styleColors.mainColor}
-                    size={20}
-                />
-                <TextInput 
-                    placeholder="Tvoj email"
-                    placeholderTextColor="#999999"
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    onChangeText={handleEmailChange}
-                    onEndEditing={handleEmailEndEditing}
-                />
-                {data.emailCheck ? 
-                <View>
-                    <Feather 
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                    />
-                </View>
-                : null}
-            </View>
-            {data.emailEndEditing && !data.emailCheck ? 
-            <View>
-                <Text style={styles.errorMsg}>Nesprávny tvar emailu.</Text>
-            </View>
-            : null
-            }
-            
-
-            <Text style={[styles.text_footer, {
-                marginTop: 35
-            }]}>Heslo</Text>
-            <View style={styles.action}>
-                <Feather 
-                    name="lock"
-                    color={styleColors.mainColor}
-                    size={20}
-                />
-                <TextInput 
-                    placeholder="Tvoje heslo"
-                    placeholderTextColor="#999999"
-                    secureTextEntry={data.secureTextEntry}
-                    style={[styles.textInput, {
-                        color: 'black'//colors.text
-                    }]}
-                    autoCapitalize="none"
-                    onChangeText={handlePasswordChange}
-                    onEndEditing={handlePasswordEndEditing}
-                />
-                <TouchableOpacity
-                    onPress={() => {
-                        setData({...data, secureTextEntry: !data.secureTextEntry});
-                    }}
-                >
-                    {data.secureTextEntry ? 
-                    <Feather 
-                        name="eye-off"
-                        color="grey"
-                        size={20}
-                    />
-                    :
-                    <Feather 
-                        name="eye"
-                        color="grey"
-                        size={20}
-                    />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={[styles.page, {alignItems: 'center', justifyContent: 'center'}]}>
+            <StatusBar backgroundColor={styleColors.mainColor} barStyle='light-content'/>
+                <View style={{width: 250}}>
+                    {/* NAME begin */}
+                    <View style={{alignItems: 'flex-start'}}>
+                        <Text style={styles.text1}>Meno</Text>
+                        <View style={styles.signInput}>
+                            <FontAwesome name={'user-o'} color={data.fullnameEndEditing && !data.fullname ? '#ff0000' : '#000000'} size={20}/>
+                            <TextInput 
+                                placeholder={'Tvoje meno'}
+                                placeholderTextColor={styleColors.grayColor}
+                                style={styles.textInput}
+                                autoCapitalize={'words'}
+                                autoCompleteType={'name'}
+                                textContentType={'name'}
+                                onChangeText={handleFullnameChange}
+                                onEndEditing={handleFullnameEndEditing}
+                            />
+                            {data.fullname ? 
+                            <Feather name="check-circle" color={'#00ff00'} size={20} />
+                            : 
+                            null
+                            }
+                        </View>
+                    </View>
+                    {data.fullnameEndEditing && !data.fullname ? 
+                    <Text style={styles.textError}>Meno nesmie byť prázdne</Text>
+                    : null
                     }
-                </TouchableOpacity>
-                {data.passwordCheck ? 
-                <View>
-                    <Feather 
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                        style={{marginLeft: 10}}
-                    />
+                    {/* NAME end */}
+                    {/* EMAIL begin */}
+                    <View style={{alignItems: 'flex-start', marginTop: 35}}>
+                        <Text style={styles.text1}>Email</Text>
+                        <View style={styles.signInput}>
+                            <MaterialIcons name="alternate-email" size={20} color={data.emailEndEditing && !data.emailCheck ? '#ff0000' : '#000000'} />
+                            <TextInput 
+                                placeholder={'Tvoj email'}
+                                placeholderTextColor={styleColors.grayColor}
+                                style={styles.textInput}
+                                autoCapitalize={'none'}
+                                autoCompleteType={'email'}
+                                keyboardType={'email-address'}
+                                textContentType={'emailAddress'}
+                                onChangeText={handleEmailChange}
+                                onEndEditing={handleEmailEndEditing}
+                            />
+                            {data.emailCheck ? 
+                            <Feather name="check-circle" color="#00ff00" size={20} />
+                            : 
+                            null
+                            }
+                        </View>
+                    </View>
+                    {data.emailEndEditing && !data.emailCheck ? 
+                    <Text style={styles.textError}>Nesprávny tvar emailu.</Text>
+                    : null
+                    }
+                    {/* EMAIL end */}
+                    {/* PASSWORD begin */}
+                    <View style={{alignItems: 'flex-start', marginTop: 35}}>
+                        <Text style={styles.text1}>Heslo</Text>
+                        <View style={styles.signInput}>
+                            <Feather name={'lock'} color={data.passwordEndEditing && !data.passwordCheck ? '#ff0000' : '#000000'} size={20}/>
+                            <TextInput
+                                placeholder={'Tvoje heslo'}
+                                placeholderTextColor={styleColors.grayColor}
+                                secureTextEntry={secureTextEntry}
+                                style={styles.textInput}
+                                autoCapitalize={'none'}
+                                onChangeText={handlePasswordChange}
+                                onEndEditing={handlePasswordEndEditing}
+                            />
+                            <TouchableOpacity onPress={() => {setSecureTextEntry(!secureTextEntry);}}>
+                                {secureTextEntry ? 
+                                <Feather name='eye-off' color={styleColors.mainColor} size={20}/>
+                                :
+                                <Feather name='eye' color={styleColors.mainColor} size={20}/>
+                                }
+                            </TouchableOpacity>
+                            {data.passwordCheck ? 
+                            <Feather name="check-circle" color="#00ff00" size={20} style={{marginLeft: 10}}/>
+                            : 
+                            null
+                            }
+                        </View>
+                        {data.passwordEndEditing && !data.passwordCheck ?
+                        <Text style={styles.textError}>Heslo musí obsahovať najmenej 8 znakov</Text>
+                        : null
+                        }
+                    </View>
+                    {/* PASSWORD end */}
+                    {/* BUTTON begin */}
+                    <TouchableOpacity 
+                        style={{marginTop: 30, backgroundColor: styleColors.mainColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 5}} 
+                        onPress={handleSignUp}
+                    >
+                        <Text style={[styles.text2, {color: '#ffffff'}]}>Vytvoriť účet</Text>
+                    </TouchableOpacity>
+                    {/* BUTTON end */}
                 </View>
-                : null}
             </View>
-            {data.passwordEndEditing && !data.passwordCheck ?
-            <View>
-            <Text style={styles.errorMsg}>Heslo musí obsahovať najmenej 8 znakov</Text>
-            </View>
-            : null
-            }
-            
-            <View style={styles.button}>
-                <TouchableOpacity
-                    style={[styles.signIn, {
-                        backgroundColor: styleColors.mainColor,
-                    }]}
-                    onPress={handleSignUp}
-                >
-                <View style={styles.signIn}>
-                    <Text style={[styles.textSign, {
-                        color:'#ffffff'
-                    }]}>Registrovať</Text>
-                </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('signIn')}
-                    style={[styles.signIn, {
-                        borderColor: styleColors.mainColor,
-                        borderWidth: 1,
-                        marginTop: 15
-                    }]}
-                >
-                    <Text style={[styles.textSign, {
-                        color: styleColors.mainColor
-                    }]}>Prihlásenie</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
     );
 };
 
-const styleColors = {
-    bgColor: '#3b3b3b',
-    mainColor: '#f5a207',
-    secondColor: '#dfdfdf',
-    grayColor: '#707070',
-};
+const SignUp = connect(state => ({globalState: state}))(SignUpContainer);
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1, 
-      backgroundColor: styleColors.bgColor,
-    },
-    header: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 50
-    },
-    footer: {
-        flex: 3,
-        backgroundColor: styleColors.secondColor,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingHorizontal: 20,
-        paddingVertical: 30
-    },
-    text_header: {
-        color: styleColors.secondColor,
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    text_header2: {
-        color: styleColors.secondColor,
-        fontSize: 20
-    },
-    text_footer: {
-        color: styleColors.bgColor,
-        fontSize: 18
-    },
-    action: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#c5c5c5',
-        paddingBottom: 5
-    },
-    actionError: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#FF0000',
-        paddingBottom: 5
-    },
-    textInput: {
-        flex: 1,
-        marginTop: -12,
-        paddingLeft: 10,
-        color: '#05375a',
-    },
-    errorMsg: {
-        color: '#FF0000',
-        fontSize: 14,
-    },
-    button: {
-        alignItems: 'center',
-        marginTop: 50
-    },
-    signIn: {
-        width: '100%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10
-    },
-    textSign: {
-        fontSize: 18,
-        fontWeight: 'bold'
-    }
-  });
-
-  export {SignUp};
+export {SignUp};

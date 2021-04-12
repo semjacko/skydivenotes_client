@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, StatusBar, StyleSheet, Keyboard, Alert} from 'react-native';
-import {FontAwesome, Feather} from '@expo/vector-icons';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, StatusBar, Keyboard, Alert} from 'react-native';
+import {Feather, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {getFromServer} from '../server';
 import {styles, styleColors} from '../styles';
@@ -47,7 +47,7 @@ const SignInContainer = (props) => {
                     <View style={{alignItems: 'flex-start'}}>
                         <Text style={styles.text1}>Email</Text>
                         <View style={styles.signInput}>
-                            <FontAwesome name={'user-o'} color={'#000000'} size={20}/>
+                            <MaterialIcons name="alternate-email" size={20} color="#000000" />
                             <TextInput 
                                 placeholder={'Tvoj email'}
                                 placeholderTextColor={styleColors.grayColor}
