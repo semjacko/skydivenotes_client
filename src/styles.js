@@ -1,14 +1,15 @@
 import {StyleSheet} from 'react-native';
 
 const styleColors = {
-    bgColor: '#dfdfdf',
+    bgColor: '#ffffff',
     mainColor: '#d1c000',
-    secondColor: '#afafaf',
+    secondColor: '#ffffff',
     textColorContent: '#000000',
     textColorSpecial: '#ffffff',
     red: '#ff0000',
     green: '#00ff00',
-    grayColor: '#bfbfbf',
+    faded: '#cfcfcf',
+    labelColor: '#afafaf'
 };
 
 const stackStyle = {
@@ -29,7 +30,7 @@ const stackStyle = {
 
 const tabStyle = {
     activeTintColor: styleColors.mainColor,
-    inactiveTintColor: styleColors.grayColor,
+    inactiveTintColor: styleColors.faded,
     style: {
         height: 60,
         paddingBottom: 5,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 5,
         borderBottomWidth: 1,
-        borderBottomColor: styleColors.grayColor,
+        borderBottomColor: styleColors.faded,
         paddingBottom: 5
     },
     textInput: {
@@ -96,13 +97,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    profileMainInfo: {
+    profileInfo: {
         alignSelf: 'stretch',
         alignItems: 'center',
         backgroundColor: styleColors.secondColor,
         padding: 30,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        marginHorizontal: 10,
+        marginVertical: 10,
+        borderRadius: 10,
+        shadowColor: "#000",
+        elevation: 5,
     },
     profileJumpInfo: {
         flexDirection: 'row',
@@ -115,15 +119,6 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         justifyContent: 'space-between',
         marginTop: 30,
-    },
-    profileCalculator: {
-        alignSelf: 'stretch',
-        alignItems: 'center',
-        backgroundColor: styleColors.secondColor,
-        padding: 30,
-        marginVertical: 20,
-        marginHorizontal: 50,
-        borderRadius: 20,
     },
     profileEditContainer: {
         alignSelf: 'stretch',
@@ -176,7 +171,7 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 12,
-        color: styleColors.grayColor,
+        color: styleColors.labelColor,
     },
     recordsItem: {
         alignItems: 'flex-start',

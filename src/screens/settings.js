@@ -1,17 +1,17 @@
 import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
-import {storeData, getStoredData, date2USformat, date2SKformat} from '../components/functions';
+import {getStoredData, date2USformat, date2SKformat} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 
-const DataRow = ({label, value, icon, editable, onEdit, style}) => {
+const DataRow = ({label, value, icon, editable, onEdit}) => {
     return (
         <TouchableHighlight activeOpacity={0.6} underlayColor="#AA0000">
             <View style={styles.editableRow}>
             {icon}
             <View style={{flex: 1, marginHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={styles.textBlack1}>{label}</Text>
+                <Text style={styles.text1}>{label}</Text>
                 <Text style={styles.label}>
                         {value}
                 </Text>
@@ -23,36 +23,15 @@ const DataRow = ({label, value, icon, editable, onEdit, style}) => {
 }
 
 const SettingsContainer = (props) => {
-    const [user, setUser] = useState({
-        email: '',
-        fullname: '',
-        license: '',
-        licenseExpiration: '',
-        medicalExpiration: '',
-        personalWeight: 0,
-        altitude: 0,
-        categoryID: 0,
-        dropzoneID: 0,
-        planeID: 0
-    });
-
-    useEffect(() => {
-        getStoredData('user')
-            .then((res) => {
-                setUser(res);
-            });
-
-    }, [])
-
     return (
         <ScrollView style={styles.page}>
             <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
             {/* NASTAVOVANIE PROFILU begin */}
             {/* OSOBNE INFO begin */}
-            <Text style={[styles.textBlack1, {marginLeft: 10, fontWeight: 'bold', marginVertical: 15}]}>Osobné informácie</Text>
+            <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold', marginTop: 15, marginBottom: 10}]}>Osobné informácie</Text>
             <DataRow
                 label={'Meno'}
-                value={user['fullname']}
+                value={props.globalState.user['fullname']}
                 icon={<Ionicons name="person" size={22} color={'#000000'} />}
                 editable={true}
                 /*onEdit={() => {
@@ -65,7 +44,7 @@ const SettingsContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Váha'}
-                value={`${user['personalWeight']} kg`}
+                value={`${props.globalState.user['personalWeight']} kg`}
                 icon={<MaterialCommunityIcons name="weight-kilogram" size={22} color={'#000000'} />}
                 editable={true}
                 /*onEdit={() => {
@@ -75,18 +54,18 @@ const SettingsContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Licencia'}
-                value={user['license']} editable={true}
+                value={props.globalState.user['license']} editable={true}
                 icon={<MaterialCommunityIcons name={'license'} size={22} color={'#000000'} />}
                 /*onEdit={() => {
                     setIsModalLicense(!isModalLicense);
                 }}*/
             />
-            <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.grayColor}}></View>
-            <Text style={[styles.textBlack1, {marginLeft: 10, fontWeight: 'bold', marginVertical: 15}]}>Dátumy platností</Text>
+            <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.faded}}></View>
+            <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold', marginTop: 15, marginBottom: 10}]}>Dátumy platností</Text>
             <DataRow
                 style={{display: 'flex', flex: 1, marginLeft: 30}}
                 label={'Zdravotná'}
-                value={date2SKformat(user['medicalExpiration'])}
+                value={date2SKformat(props.globalState.user['medicalExpiration'])}
                 icon={<FontAwesome5 name="book-medical" size={22} color={'#000000'} />}
                 editable={true}
                 /*onEdit={() => {
@@ -96,7 +75,7 @@ const SettingsContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1, marginLeft: 30}}
                 label={'Licencia'}
-                value={date2SKformat(user['licenseExpiration'])}
+                value={date2SKformat(props.globalState.user['licenseExpiration'])}
                 icon={<FontAwesome name="drivers-license" size={22} color={'#000000'} />}
                 editable={true}
                 /*onEdit={() => {
@@ -104,11 +83,11 @@ const SettingsContainer = (props) => {
                 }}*/
             />
             {/* OSOBNE INFO end */}
-            <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.grayColor}}></View>
-            <Text style={[styles.textBlack1, {marginLeft: 10, fontWeight: 'bold', marginVertical: 15}]}>Osobné nastavenia</Text>
+            <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.faded}}></View>
+            <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold', marginTop: 15, marginBottom: 10}]}>Osobné nastavenia</Text>
             <DataRow
                 label={'Padák'}
-                value={user['parachuteID']}
+                value={props.globalState.user['parachuteID']}
                 icon={<MaterialCommunityIcons name="parachute" size={22} color={'#000000'} />}
                 editable={true}
                 /*onEdit={() => {
@@ -117,7 +96,7 @@ const SettingsContainer = (props) => {
             />
             <DataRow
                 label={'Kategória'}
-                value={user['categoryID']}
+                value={props.globalState.user['categoryID']}
                 icon={<MaterialIcons name={'category'} size={22} color={'#000000'}/>}
                 editable={true}
                 /* onEdit={() => {
@@ -126,7 +105,7 @@ const SettingsContainer = (props) => {
             />
             <DataRow
                 label={'Výška'}
-                value={`${user['altitude']}m`}
+                value={`${props.globalState.user['altitude']}m`}
                 icon={<MaterialIcons name={'height'} size={22} color={'#000000'}/>}
                 editable={true}
                 /*onEdit={() => {
@@ -135,7 +114,7 @@ const SettingsContainer = (props) => {
             />
             <DataRow
                 label={'Lietadlo'}
-                value={user['planeID']}
+                value={props.globalState.user['planeID']}
                 icon={<MaterialCommunityIcons name={'airplane'} size={22} color={'#000000'}/>}
                 editable={true}
                 /* onEdit={() => {
@@ -144,7 +123,7 @@ const SettingsContainer = (props) => {
             />
             <DataRow
                 label={'Letisko'}
-                value={user['dropzoneID']}
+                value={props.globalState.user['dropzoneID']}
                 icon={<MaterialCommunityIcons name={'airport'} size={22} color={'#000000'} />}
                 editable={true}
                 /* onEdit={() => {
@@ -156,6 +135,6 @@ const SettingsContainer = (props) => {
     );
 }
 
-let Settings = connect(state => ({globalState: state}))(SettingsContainer);
+const Settings = connect(state => ({globalState: state}))(SettingsContainer);
 
 export {Settings};

@@ -1,9 +1,9 @@
 import React from 'react';
 import {Alert} from 'react-native';
 
-const getFromServer = (url, callback) => {
+const getFromServer = ({url, headers, callback}) => {
     return (
-        fetch(url, {method: 'GET'})
+        fetch(url, {method: 'GET', headers: headers})
             .then(response => {
                 let statusCode = response.status;
                 let data = null;

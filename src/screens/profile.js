@@ -1,9 +1,10 @@
 import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
-import {calcWingLoad, storeData, date2SKformat} from '../components/functions';
+import {calcWingLoad, date2SKformat} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
+import {getFromServer} from '../server';
 
 const LabeledValue = ({label, value, align}) => {
     return (
@@ -15,18 +16,6 @@ const LabeledValue = ({label, value, align}) => {
 }
 
 const ProfileContainer = (props) => {
-    const [user, setUser] = useState({
-        email: '',
-        fullname: '',
-        license: '',
-        licenseExpiration: '',
-        medicalExpiration: '',
-        personalWeight: 0,
-        altitude: 0,
-        categoryID: 0,
-        dropzoneID: 0,
-        planeID: 0
-    });
     const [calculator, setCalculator] = useState({
         weight: '',
         wingSize: '',
@@ -34,20 +23,19 @@ const ProfileContainer = (props) => {
     });
 
     useEffect(() => {
-        fetch(`https://skydivenotes.sk/user`, {
-            method: 'GET',
-            headers: {
-                'Authorization': props.globalState.token,
-            },
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                setUser(json);
-                setCalculator({...calculator, weight: json['personalWeight']});
-                storeData('user', json);
-            })
-            .catch((err) => console.log(err));
-    }, []);
+        getFromServer({
+            url: 'https://skydivenotes.sk/user', 
+            headers: {'Authorization': props.globalState.token},
+            callback: (status, data) => {
+                if (status == 200) {
+                    setCalculator({...calculator, weight: data['personalWeight']});
+                    props.dispatch({type: 'UPDATE_USER', user: data})
+                } else {
+                    Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
+                }
+            } 
+        });
+    }, [])
 
     useEffect(() => {
         let weightFloat = parseFloat(calculator['weight']);
@@ -64,14 +52,14 @@ const ProfileContainer = (props) => {
             <ScrollView style={styles.page}>
                 <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
                 {/* ZAKLADNE INFO begin */}
-                <View style={styles.profileMainInfo}>
+                <View style={styles.profileInfo}>
                     {/* LICENCIA begin */}
                     <View style={styles.circle}>
-                        <Text style={[styles.text4, {fontWeight: 'bold'}]}>{user['license']}</Text>
+                        <Text style={[styles.text4, {fontWeight: 'bold'}]}>{props.globalState.user['license']}</Text>
                     </View>
                     {/* LICENCIA end */}
                     {/* ZOSKOKY INFO begin */}
-                    <Text style={[styles.text2, {marginTop: 15}]}>{user['fullname']}</Text>
+                    <Text style={[styles.text2, {marginTop: 15}]}>{props.globalState.user['fullname']}</Text>
                     <View style={styles.profileJumpInfo}>
                         <LabeledValue label={'Zoskoky'} value={254} align={'center'}/>
                         <LabeledValue label={'Voľný pád'} value={'1:30:40'} align={'center'}/>
@@ -80,17 +68,17 @@ const ProfileContainer = (props) => {
                     {/* ZOSKOKY INFO end */}
                     {/* PLATNOSTI begin */}
                     <View style={styles.profileLicenseInfo}>
-                        <LabeledValue label={'Platnosť licencie'} value={date2SKformat(user['licenseExpiration'])} align={'flex-start'}/>
-                        <LabeledValue label={'Platnosť zdravotnej'} value={date2SKformat(user['medicalExpiration'])} align={'flex-end'}/>
+                        <LabeledValue label={'Platnosť licencie'} value={date2SKformat(props.globalState.user['licenseExpiration'])} align={'flex-start'}/>
+                        <LabeledValue label={'Platnosť zdravotnej'} value={date2SKformat(props.globalState.user['medicalExpiration'])} align={'flex-end'}/>
                     </View>
                     {/* PLATNOSTI end */}
                 </View>
                 {/* ZAKLADNE INFO end */}
                 {/* KALKULACKA begin */}
-                <View style={styles.profileCalculator}>
-                    <Text style={styles.textBlack2}>Výpočet zaťaženia</Text>
+                <View style={styles.profileInfo}>
+                    <Text style={styles.text3}>Výpočet zaťaženia</Text>
                     <View style={{flexDirection: 'row', marginTop: 20, alignItems: 'center'}}>
-                        <MaterialCommunityIcons name="weight-kilogram" size={20} color={'#000000'}/>
+                        <MaterialCommunityIcons name="weight-kilogram" size={20} color={styleColors.textColorContent}/>
                         <TextInput
                             textAlign={'left'}
                             placeholder={'kg'}
@@ -104,7 +92,7 @@ const ProfileContainer = (props) => {
                         />
                     </View>
                     <View style={{flexDirection: 'row', marginTop: 20, alignItems: 'center'}}>
-                        <MaterialCommunityIcons name="parachute" size={20} color={'#000000'}/>
+                        <MaterialCommunityIcons name="parachute" size={20} color={styleColors.textColorContent}/>
                         <TextInput
                             textAlign={'left'}
                             placeholder={'ft'}
@@ -116,7 +104,7 @@ const ProfileContainer = (props) => {
                             style={{marginLeft: 10, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: styleColors.mainColor, width: 50}}
                         />
                     </View>
-                    <Text style={[styles.textBlack3, {marginTop: 20}]}>{calculator['wingLoad']}</Text>
+                    <Text style={[styles.text4, {marginTop: 20, fontWeight: 'bold'}]}>{calculator['wingLoad']}</Text>
                 </View>
                 {/* KALKULACKA end */}
             </ScrollView>
@@ -124,6 +112,6 @@ const ProfileContainer = (props) => {
     );
 }
 
-let Profile = connect(state => ({globalState: state}))(ProfileContainer);
+const Profile = connect(state => ({globalState: state}))(ProfileContainer);
 
 export {Profile};

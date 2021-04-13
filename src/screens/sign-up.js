@@ -111,7 +111,7 @@ const SignUpContainer = (props) => {
                             <FontAwesome name={'user-o'} color={data.fullnameEndEditing && !data.fullname ? styleColors.red : styleColors.textColorContent} size={20}/>
                             <TextInput 
                                 placeholder={'Tvoje meno'}
-                                placeholderTextColor={styleColors.grayColor}
+                                placeholderTextColor={styleColors.fadedColor}
                                 style={styles.textInput}
                                 autoCapitalize={'words'}
                                 autoCompleteType={'name'}
@@ -138,7 +138,7 @@ const SignUpContainer = (props) => {
                             <MaterialIcons name="alternate-email" size={20} color={data.emailEndEditing && !data.emailCheck ? styleColors.red : styleColors.textColorContent} />
                             <TextInput 
                                 placeholder={'Tvoj email'}
-                                placeholderTextColor={styleColors.grayColor}
+                                placeholderTextColor={styleColors.fadedColor}
                                 style={styles.textInput}
                                 autoCapitalize={'none'}
                                 autoCompleteType={'email'}
@@ -166,7 +166,7 @@ const SignUpContainer = (props) => {
                             <Feather name={'lock'} color={data.passwordEndEditing && !data.passwordCheck ? styleColors.red : styleColors.textColorContent} size={20}/>
                             <TextInput
                                 placeholder={'Tvoje heslo'}
-                                placeholderTextColor={styleColors.grayColor}
+                                placeholderTextColor={styleColors.fadedColor}
                                 secureTextEntry={secureTextEntry}
                                 style={styles.textInput}
                                 autoCapitalize={'none'}

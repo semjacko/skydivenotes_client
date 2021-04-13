@@ -28,14 +28,16 @@ const SignInContainer = (props) => {
             Alert.alert('Nesprávne údaje!', 'Email a heslo nesmú byť prázdne.', [{text: 'Ok'}]);
             return;
         }
-        getFromServer(`https://skydivenotes.sk/token?email=${email}&password=${password}`, (status, data) => {
+        getFromServer({
+            url: `https://skydivenotes.sk/token?email=${email}&password=${password}`, 
+            callback: (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
                 props.navigation.navigate('signedIn');
             } else {
                 Alert.alert('Nesprávne údaje!', 'Zadali ste nesprávny email alebo heslo', [{text: 'Ok'}]);
             }
-        });
+        }});
     }
 
     return (
@@ -50,7 +52,7 @@ const SignInContainer = (props) => {
                             <MaterialIcons name="alternate-email" size={20} color={styleColors.textColorContent}/>
                             <TextInput 
                                 placeholder={'Tvoj email'}
-                                placeholderTextColor={styleColors.grayColor}
+                                placeholderTextColor={styleColors.labelColor}
                                 style={styles.textInput}
                                 autoCapitalize={'none'}
                                 autoCompleteType={'email'}
@@ -68,7 +70,7 @@ const SignInContainer = (props) => {
                             <Feather name={'lock'} color={styleColors.textColorContent} size={20}/>
                             <TextInput
                                 placeholder={'Tvoje heslo'}
-                                placeholderTextColor={styleColors.grayColor}
+                                placeholderTextColor={styleColors.labelColor}
                                 secureTextEntry={secureTextEntry}
                                 style={styles.textInput}
                                 autoCapitalize={'none'}
