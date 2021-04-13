@@ -28,7 +28,7 @@ const SignInContainer = (props) => {
             Alert.alert('Nesprávne údaje!', 'Email a heslo nesmú byť prázdne.', [{text: 'Ok'}]);
             return;
         }
-        getFromServer(`http://18.196.156.172/token?email=${email}&password=${password}`, (status, data) => {
+        getFromServer(`https://skydivenotes.sk/token?email=${email}&password=${password}`, (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
                 props.navigation.navigate('signedIn');

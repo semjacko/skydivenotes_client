@@ -34,7 +34,7 @@ const ProfileContainer = (props) => {
     });
 
     useEffect(() => {
-        fetch(`http://18.196.156.172/user`, {
+        fetch(`https://skydivenotes.sk/user`, {
             method: 'GET',
             headers: {
                 'Authorization': props.globalState.token,

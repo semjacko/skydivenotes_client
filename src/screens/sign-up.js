@@ -89,7 +89,7 @@ const SignUpContainer = (props) => {
             return;
         }
 
-        postToServer('http://18.196.156.172/user', {user: user}, (status, data) => {
+        postToServer('https://skydivenotes.sk/user', {user: user}, (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
                 props.navigation.navigate('signedIn');
