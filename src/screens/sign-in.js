@@ -33,7 +33,6 @@ const SignInContainer = (props) => {
             callback: (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
-                props.navigation.navigate('signedIn');
             } else {
                 Alert.alert('Nesprávne údaje!', 'Zadali ste nesprávny email alebo heslo', [{text: 'Ok'}]);
             }

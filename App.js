@@ -1,9 +1,9 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import { SignNavigation } from './src/navigation/sign-navigation';
+import {SignNavigation} from './src/navigation/sign-navigation';
 import {MainNavigation} from './src/navigation/main-navigation';
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
 
 const initialState = {
   user: {
@@ -28,16 +28,19 @@ const reducer = (state = initialState, action) => {
       state.token = action.token;
       state.isSignedIn = true;
       break;
+    case 'SIGN_OUT':
+      state.token = '';
+      state.isSignedIn = false;
+      break;
     case 'UPDATE_USER':
       state.user = {...action.user};
       break;
   }
-  return state
+  return {...state}
 }
 
 const store = createStore(reducer)
 
-// TODO if signedIn then main-navi
 export default function App() {
   return (
     <Provider store={store}>

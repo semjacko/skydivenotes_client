@@ -92,7 +92,6 @@ const SignUpContainer = (props) => {
         postToServer('https://skydivenotes.sk/user', {user: user}, (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
-                props.navigation.navigate('signedIn');
             } else {
                 Alert.alert('Email už existuje!', 'Zadaný email už v databáze existuje', [{text: 'Ok'}]);
             }
@@ -148,7 +147,7 @@ const SignUpContainer = (props) => {
                                 onEndEditing={handleEmailEndEditing}
                             />
                             {data.emailCheck ? 
-                            <Feather name="check-circle" color={styleColors.red} size={20} />
+                            <Feather name="check-circle" color={styleColors.green} size={20} />
                             : 
                             null
                             }

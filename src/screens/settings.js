@@ -7,7 +7,11 @@ import {connect} from 'react-redux';
 
 const DataRow = ({label, value, icon, editable, onEdit}) => {
     return (
-        <TouchableHighlight activeOpacity={0.6} underlayColor="#AA0000">
+        <TouchableHighlight 
+            activeOpacity={0.6} 
+            underlayColor={"#AA0000"}
+            onPress={onEdit}
+        >
             <View style={styles.editableRow}>
             {icon}
             <View style={{flex: 1, marginHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -16,7 +20,7 @@ const DataRow = ({label, value, icon, editable, onEdit}) => {
                         {value}
                 </Text>
             </View>
-            <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor} />
+            {editable && <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor}/>}
             </View>
         </TouchableHighlight>
     );
@@ -131,6 +135,13 @@ const SettingsContainer = (props) => {
                 }}*/
             />
             {/* NASTAVOVANIE PROFILU end */}
+            <DataRow
+                label={'Odhlásiť'}
+                icon={<MaterialCommunityIcons name={'logout'} size={22} color={'#000000'} />}
+                onEdit={() => {
+                    props.dispatch({type: 'SIGN_OUT'});
+                }}
+            />
         </ScrollView>
     );
 }

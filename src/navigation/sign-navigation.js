@@ -6,12 +6,15 @@ import {SignIn} from '../screens/sign-in';
 import {SignUp} from '../screens/sign-up';
 import {MainNavigation} from './main-navigation';
 import {Ionicons} from '@expo/vector-icons';
+import {connect} from 'react-redux';
 
 const Stack = createStackNavigator();
 
-const SignNavigation = (props) => {
+const SignNavigationContainer = (props) => {
     return (
-        <Stack.Navigator initialRouteName={'signIn'} screenOptions={stackStyle}>
+        <Stack.Navigator screenOptions={stackStyle}>
+            {!props.globalState.isSignedIn ?
+            <>
             {/* SINGIN begin */}
             <Stack.Screen
                 name={'signIn'}
@@ -40,16 +43,22 @@ const SignNavigation = (props) => {
                 })}
             />
             {/* SIGNUP end */}
+            </>
+            :
+            <>
             {/* ALREADY SIGNEDIN begin */}
             <Stack.Screen
                 name={'signedIn'}
                 component={MainNavigation}
-                options={{headerShown: false, headerTitleAlign: 'center'}}
+                options={{headerShown: false}}
             />
             {/* ALREADY SIGNEDIN end */}
+            </>
+            }
         </Stack.Navigator>
     )
 }
 
+const SignNavigation = connect(state => ({globalState: state}))(SignNavigationContainer);
 
 export {SignNavigation}

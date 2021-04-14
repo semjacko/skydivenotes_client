@@ -24,12 +24,12 @@ const ProfileNavigation = ({route}) => {
                     title: 'Profil',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
-                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorContent} />
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { navigation.navigate('settings'); }} >
-                            <MaterialIcons name={'edit'} size={30} color={styleColors.textColorContent} />
+                            <MaterialIcons name={'edit'} size={30} color={styleColors.textColorSpecial} />
                         </TouchableOpacity>
                     )
                 })}
