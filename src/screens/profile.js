@@ -1,7 +1,7 @@
 import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
-import {calcWingLoad, date2SKformat} from '../components/functions';
+import {calcWingLoad, date2SKformat, seconds2HHMMSS} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {getFromServer} from '../server';
@@ -61,9 +61,9 @@ const ProfileContainer = (props) => {
                     {/* ZOSKOKY INFO begin */}
                     <Text style={[styles.text2, {marginTop: 15}]}>{props.globalState.user['fullname']}</Text>
                     <View style={styles.profileJumpInfo}>
-                        <LabeledValue label={'Zoskoky'} value={254} align={'center'}/>
-                        <LabeledValue label={'Voľný pád'} value={'1:30:40'} align={'center'}/>
-                        <LabeledValue label={'Odhody'} value={2} align={'center'}/>
+                        <LabeledValue label={'Zoskoky'} value={props.globalState.user['jumpsQty']} align={'center'}/>
+                        <LabeledValue label={'Voľný pád'} value={seconds2HHMMSS(props.globalState.user['timeFreeFallSum'])} align={'center'}/>
+                        <LabeledValue label={'Odhody'} value={props.globalState.user['cutawaySum']} align={'center'}/>
                     </View>
                     {/* ZOSKOKY INFO end */}
                     {/* PLATNOSTI begin */}

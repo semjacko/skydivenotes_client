@@ -16,7 +16,10 @@ const initialState = {
     altitude: 0,
     categoryID: 0,
     dropzoneID: 0,
-    planeID: 0
+    planeID: 0,
+    timeFreeFallSum: 0,
+    cutawaySum: 0,
+    jumpsQty: 0
   },
   token: '',
   isSignedIn: false

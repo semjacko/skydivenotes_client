@@ -38,6 +38,18 @@ const altitude2seconds = (altitude) => {
     return 60;
 }
 
+const seconds2HHMMSS = (secondsRaw) => {
+    let hours   = Math.floor(secondsRaw / 3600);
+    let minutes = Math.floor((secondsRaw - (hours * 3600)) / 60);
+    let seconds = secondsRaw - (hours * 3600) - (minutes * 60);
+
+    hours = hours < 10 ?  `0${hours}` : hours;
+    minutes = minutes < 10 ?  `0${minutes}` : minutes;
+    seconds = seconds < 10 ?  `0${seconds}` : seconds;
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
 const calcWingLoad = (weight, wingSize) => parseFloat(((weight * 2.2) / wingSize).toFixed(2));
 
 const storeData = async (key, value) => {
@@ -59,4 +71,4 @@ const getStoredData = async (key) => {
 }
   
 
-export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData};
+export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData, seconds2HHMMSS};
