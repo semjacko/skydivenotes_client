@@ -25,12 +25,12 @@ const RecordsNavigation = ({route}) => {
                     title: 'Záznamy',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }}>
-                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorContent}/>
+                            <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial}/>
                         </TouchableOpacity>
                     ),
                     headerRight: () => (
                         <TouchableOpacity onPress={() => { navigation.navigate('recordsAdd'); }}>
-                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorContent}/>
+                            <MaterialIcons name={'add'} size={30} color={styleColors.textColorSpecial}/>
                         </TouchableOpacity>
                     )
                 })}
@@ -45,7 +45,7 @@ const RecordsNavigation = ({route}) => {
                     headerRight: () => (
                         // po stlaceni smetiaka sa emitne event DeleteRecordPressed ktory potom zachyti komponent RecordsDetail
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit('DeleteRecordPressed'); }}>
-                            <MaterialIcons name={'delete'} size={30} color={styleColors.textColorContent}/>
+                            <MaterialIcons name={'delete'} size={30} color={styleColors.textColorSpecial}/>
                         </TouchableOpacity>)
                 })}
             />
@@ -59,7 +59,7 @@ const RecordsNavigation = ({route}) => {
                     headerRight: () => (
                         // po stlaceni kazetky sa emitne savePressed event ktory potom zachyti komponent RecordsAdd
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit('SaveRecordPressed'); }}>
-                            <MaterialIcons name={'save'} size={30} color={styleColors.textColorContent}/>
+                            <MaterialIcons name={'save'} size={30} color={styleColors.textColorSpecial}/>
                         </TouchableOpacity>)
                 }}
             />

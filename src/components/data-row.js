@@ -12,8 +12,12 @@ const DataRow = ({label, value, icon, editable, onEdit}) => {
         >
             <View style={styles.editableRow}>
             {icon}
-            <View style={{flex: 1, marginHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <View style={{flex: 1, marginLeft: 20, marginRight: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                {editable ?
                 <Text style={styles.text1}>{label}</Text>
+                : 
+                <Text style={[styles.text1, {color: styleColors.labelColor}]}>{label}</Text>
+                }
                 <Text style={styles.label}>
                         {value}
                 </Text>

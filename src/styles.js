@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 15,
+        marginVertical: 18,
         marginHorizontal: 10,
     },
     textWhite1: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         color: styleColors.secondColor,
     },
     label: {
-        fontSize: 12,
+        fontSize: 14,
         color: styleColors.labelColor,
     },
     recordsItem: {
@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
         marginVertical: 2,
         marginHorizontal: 5,
         alignSelf: 'stretch',
+        elevation: 5,
         backgroundColor: styleColors.secondColor,
     },
     recordsContainer: {
