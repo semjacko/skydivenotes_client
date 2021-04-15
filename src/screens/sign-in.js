@@ -99,7 +99,7 @@ const SignInContainer = (props) => {
                         <Text style={[styles.text2, {color: styleColors.textColorSpecial}]}>Prihlásiť</Text>
                     </TouchableOpacity>
                     <View style={{marginTop: 50, alignItems: 'center'}}>
-                        <Text style={styles.text1}>Este nemate ucet?</Text>
+                        <Text style={styles.text1}>Ešte nemáte účet?</Text>
                         <TouchableOpacity
                             style={{marginTop: 20}}
                             onPress={() => props.navigation.navigate('signUp')}

@@ -1,8 +1,8 @@
-import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
+import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {calcWingLoad, date2SKformat, seconds2HHMMSS} from '../components/functions';
-import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {getFromServer} from '../server';
 
@@ -55,7 +55,7 @@ const ProfileContainer = (props) => {
                 <View style={styles.profileInfo}>
                     {/* LICENCIA begin */}
                     <View style={styles.circle}>
-                        <Text style={[styles.text4, {fontWeight: 'bold'}]}>{props.globalState.user['license']}</Text>
+                        <Text style={[styles.text4, {color: styleColors.textColorSpecial, fontWeight: 'bold'}]}>{props.globalState.user['license']}</Text>
                     </View>
                     {/* LICENCIA end */}
                     {/* ZOSKOKY INFO begin */}

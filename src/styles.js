@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 const styleColors = {
     bgColor: '#ffffff',
-    mainColor: '#d1c000',
+    mainColor: '#3286ed',
     secondColor: '#ffffff',
     textColorContent: '#000000',
     textColorSpecial: '#ffffff',
