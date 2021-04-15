@@ -3,13 +3,11 @@ import React from 'react';
 import {Text, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import {stackStyle, tabStyle, styleColors} from '../styles';
 import {Parachutes} from '../screens/parachutes';
 import {Planes} from '../screens/planes';
 import {Dropzones} from '../screens/dropzones';
 import {Categories} from '../screens/categories';
-
 
 const Tab = createBottomTabNavigator();
 
@@ -79,7 +77,6 @@ const AssetsNavigation = ({route}) => {
         </Tab.Navigator>
     );
 }
-
 
 const Stack = createStackNavigator();
 
@@ -160,6 +157,7 @@ const PlanesTopMenu = ({route}) => {
         </Stack.Navigator>
     );
 }
+
 const CategoriesTopMenu = ({route}) => {
     return (
         <Stack.Navigator screenOptions={stackStyle}>
@@ -185,6 +183,5 @@ const CategoriesTopMenu = ({route}) => {
         </Stack.Navigator>
     );
 }
-
 
 export {AssetsNavigation}
