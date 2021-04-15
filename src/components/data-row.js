@@ -1,42 +1,27 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-
+import {Text, TouchableHighlight, View} from 'react-native';
+import {MaterialIcons} from '@expo/vector-icons';
 import {styles, styleColors} from '../styles';
 
-
-const DataRow = ({label, value, icon, editable, onEdit, style}) => {
-    if (!editable) {
-        return (
-            <View style={[style, styles.editableRow]}>
-                {icon}
-                <View style={{flex: 1, marginLeft: 5}}>
-                    <Text style={styles.label}>{label}</Text>
-                    <View style={{alignSelf: 'stretch', borderBottomWidth: 1, borderColor: styleColors.grayColor}} >
-                        <Text style={[styles.textWhite1, {color: styleColors.grayColor}]}>
-                            {value}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-        );
-    }
-
+const DataRow = ({label, value, icon, editable, onEdit}) => {
     return (
-        <View style={[style, styles.editableRow]}>
+        <TouchableHighlight 
+            activeOpacity={0.6} 
+            underlayColor={styleColors.mainColor}
+            onPress={onEdit}
+        >
+            <View style={styles.editableRow}>
             {icon}
-            <View style={{flex: 1, marginLeft: 5}}>
-                <Text style={styles.label}>{label}</Text>
-                <View style={{alignSelf: 'stretch', borderBottomWidth: 1, borderColor: styleColors.mainColor}} >
-                    <TouchableOpacity onPress={onEdit}>
-                        <Text style={styles.textBlack1}>
-                            {value}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+            <View style={{flex: 1, marginHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Text style={styles.text1}>{label}</Text>
+                <Text style={styles.label}>
+                        {value}
+                </Text>
             </View>
-        </View>
+            {editable && <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor}/>}
+            </View>
+        </TouchableHighlight>
     );
 }
-
 
 export {DataRow};
