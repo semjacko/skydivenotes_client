@@ -1,5 +1,6 @@
 import React from 'react';
 import {Alert} from 'react-native';
+import { call } from 'react-native-reanimated';
 
 const getFromServer = ({url, headers, callback}) => {
     return (
@@ -40,4 +41,19 @@ const postToServer = (url, sendData, callback) => {
     );
 }
 
-export {getFromServer, postToServer};
+const putToServer = (url, sendData, headers, callback) => {
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sendData)
+    })
+    // TODO response doesnt work
+    callback(200, null);
+}
+
+
+export {getFromServer, postToServer, putToServer};

@@ -10,6 +10,7 @@ const date2SKformat = (date) => {
     return skDate;
 }
 
+// 4/5/2020 => 20200504
 const date2USformat = (date) => {
     if (typeof(date) !== 'string') {
         return '';
@@ -17,7 +18,7 @@ const date2USformat = (date) => {
     let [day, month, year] = date.split('/');
     month = month.length < 2 ? `0${month}` : month;
     day = day.length < 2 ? `0${day}` : day;
-    let usDate = `${year}/${month}/${day}`;
+    let usDate = `${year}${month}${day}`;
     return usDate;
 }
 
@@ -34,8 +35,11 @@ const altitude2seconds = (altitude) => {
         return 20;
     } else if (altitudeInt <= 3000) {
         return 40;
+    } else if (altitudeInt < 3000) {
+        return 60;
     }
-    return 60;
+
+    return -1;
 }
 
 const seconds2HHMMSS = (secondsRaw) => {
