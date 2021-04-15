@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {Text, TextInput, View} from 'react-native';
 import Modal from 'react-native-modal';
-
 import {styleColors, styles} from '../styles';
 import {ModalLowerButtons} from "./modal-buttons";
 
-
 // po potvrdeni vola fuknciu onConfrim a vklada do nej input (ak nie je prazdny)
-const ModalText = ({isVisible, setIsVisible, title, value, placeholder, onConfirm}) => {
+const ModalText = ({isVisible, hide, title, value, placeholder, onConfirm}) => {
     let textInput = React.createRef();
     let [inp, setInp] = useState(value.toString());
 
@@ -24,7 +22,9 @@ const ModalText = ({isVisible, setIsVisible, title, value, placeholder, onConfir
             onModalShow={() => {
                 textInput.current.focus();
             }}
-            onBackButtonPress={() => { setIsVisible(!isVisible); }}
+            onBackButtonPress={() => { 
+                hide(); 
+            }}
         >
             <View style={styles.centeredModal}>
                 <View style={[styles.modalView, {padding: 0}]}>
@@ -41,11 +41,11 @@ const ModalText = ({isVisible, setIsVisible, title, value, placeholder, onConfir
                     />
                     <ModalLowerButtons
                         onCancel={() => {
-                            setIsVisible(!isVisible);
+                            hide();
                         }}
                         onConfirm={() => {
-                            setIsVisible(!isVisible);
                             onConfirm(inp || value);
+                            hide();
                         }}
                     />
                 </View>
@@ -53,6 +53,5 @@ const ModalText = ({isVisible, setIsVisible, title, value, placeholder, onConfir
         </Modal>
     );
 }
-
 
 export {ModalText};
