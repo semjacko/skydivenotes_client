@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {View, FlatList, Text, TouchableOpacity} from 'react-native';
 
-
 const ITEMS_COUNT = 5;  // naraz je vidno 5 itemov
+const HEIGHT = 200;
 
 const opacities = {
     0: 1,
@@ -16,13 +16,12 @@ const textSizes = {
     2: 12,
 };
 
-
-const ScrollPicker = ({width, highlightColor, data, initialIndex, onSelect, style}) => {
-
-    const height = 200;
-    const itemHeight = height / ITEMS_COUNT;
+// data je pole [{key, value}, {key, value}...]
+const ScrollPicker = ({width, highlightColor, data, initialKey, onSelect, style}) => {
+    const itemHeight = HEIGHT / ITEMS_COUNT;
     const flatList = useRef();
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const initialIndex = data.findIndex(e => e.key == initialKey);
 
     const onScroll = (event) => {
         let index = Math.round(event.nativeEvent.contentOffset.y / itemHeight);
@@ -48,15 +47,15 @@ const ScrollPicker = ({width, highlightColor, data, initialIndex, onSelect, styl
                     flatList.current.scrollToIndex({index: index, animated: true, viewPosition: 0});
                 }}
             >
-                <Text style={{fontSize: textSizes[gap], opacity: opacities[gap], fontWeight: fontWeight, color: color}}>{item}</Text>
+                <Text style={{fontSize: textSizes[gap], opacity: opacities[gap], fontWeight: fontWeight, color: color}}>{item.value}</Text>
             </TouchableOpacity>
         );
     }
 
-    const keyExtractor = (item) => item.toString();
+    const keyExtractor = (item) => item.key.toString();
 
     return (
-        <View style={[style, {height: height, width: width}]}>
+        <View style={[style, {height: HEIGHT, width: width}]}>
             <FlatList
                 contentContainerStyle={{paddingVertical: itemHeight * 2}}
                 data={data}
