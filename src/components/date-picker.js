@@ -6,20 +6,21 @@ import {styles, styleColors} from '../styles';
 import {ModalUpperButtons} from './modal-buttons';
 import {date2USformat} from './functions';
 
+const YEARS = [...Array(60).keys()].map((e) => ({key: e + 1, value: e + 1990}));
 
-const months = [
-    'Január',
-    'Február',
-    'Marec',
-    'Apríl',
-    'Máj',
-    'Jún',
-    'Júl',
-    'August',
-    'September',
-    'Október',
-    'November',
-    'December',
+const MONTHS = [
+    {key: 1, value: 'Január'},
+    {key: 2, value: 'Február'},
+    {key: 3, value: 'Marec'},
+    {key: 4, value: 'Apríl'},
+    {key: 5, value: 'Máj'},
+    {key: 6, value: 'Jún'},
+    {key: 7, value: 'Júl'},
+    {key: 8, value: 'August'},
+    {key: 9, value: 'September'},
+    {key: 10, value: 'Október'},
+    {key: 11, value: 'November'},
+    {key: 12, value: 'December'}
 ];
 
 const getDaysOfMonthYear = (month, year) => {
@@ -29,17 +30,19 @@ const getDaysOfMonthYear = (month, year) => {
     } else if (month === 4 || month === 6 || month === 9 || month === 11) {
         len = 30;
     }
-    return Array.from({length: len}, (_, i) => i + 1);
+    return [...Array(len).keys()].map((e) => ({key: e+1, value: e+1}));
 }
 
-
 // onConfirm: ('yyyymmdd') => onConfirm
-const DatePicker = ({isVisible, setIsVisible, initialDate, onConfirm}) => {
-    let dateArr = initialDate.split('/');
+const DatePicker = ({isVisible, hide, initialDate, onConfirm}) => {
+    if (typeof(initialDate) !== 'string' || initialDate.length != 8) {
+        return null
+    }
+    
     let date = {
-        year: parseInt(dateArr[0]),
-        month: parseInt(dateArr[1]),
-        day: parseInt(dateArr[2])
+        year: initialDate.slice(0, 4),
+        month: initialDate.slice(4, 6),
+        day: initialDate.slice(6, 8)
     };
 
     const [day, setDay] = useState(date.day);  // od 1 po 31
@@ -52,43 +55,43 @@ const DatePicker = ({isVisible, setIsVisible, initialDate, onConfirm}) => {
             isVisible={isVisible}
             animationIn={'slideInUp'}
             animationOut={'slideOutDown'}
-            onBackButtonPress={() => { setIsVisible(!isVisible); }}
+            onBackButtonPress={() => { hide(); }}
         >
             <View style={styles.bottomModal}>
                 <View style={styles.bottomModalView}>
                     <ModalUpperButtons
                         onConfirm={() => {
-                            setIsVisible(false);
                             let result = date2USformat(`${day}/${month}/${year}`);
                             onConfirm(result);
+                            hide();
                         }}
                         onCancel={() => {
-                            setIsVisible(false);
+                            hide();
                         }}
                     />
                     <View style={{flexDirection: 'row'}}>
                         <ScrollPicker
                             data={getDaysOfMonthYear(month, year)}
-                            initialIndex={date.day - 1}
+                            initialKey={date.day}
                             width={60}
                             highlightColor={styleColors.mainColor}
-                            onSelect={(text) => { setDay(parseInt(text)); }}
+                            onSelect={(obj) => { setDay(parseInt(obj.value)); }}
                         />
                         <ScrollPicker
-                            data={months}
-                            initialIndex={date.month - 1}
+                            data={MONTHS}
+                            initialKey={MONTHS.find(e => e.key == date.month).key}
                             height={200}
                             width={110}
                             highlightColor={styleColors.mainColor}
-                            onSelect={(text) => { setMonth(months.indexOf(text) + 1); }}
+                            onSelect={(obj) => { setMonth(obj.key); }}
                         />
                         <ScrollPicker
-                            data={Array.from({length: 61}, (_, i) => i + 1990)}
-                            initialIndex={date.year - 1990}
+                            data={YEARS}
+                            initialKey={date.year - 1989}
                             height={200}
                             width={80}
                             highlightColor={styleColors.mainColor}
-                            onSelect={(text) => { setYear(parseInt(text)); }}
+                            onSelect={(obj) => { setYear(parseInt(obj.value)); }}
                         />
                     </View>
                 </View>
