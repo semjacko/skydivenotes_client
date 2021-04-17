@@ -7,11 +7,11 @@ import {ModalLowerButtons} from "./modal-buttons";
 // po potvrdeni vola fuknciu onConfrim a vklada do nej input (ak nie je prazdny)
 const ModalText = ({isVisible, hide, title, value, placeholder, onConfirm}) => {
     let textInput = React.createRef();
-    let [inp, setInp] = useState(value.toString());
+    let [inp, setInp] = useState(value?.toString());
 
     // aby sa vzdy ked sa objavi modalne okno inicializoval input
     useEffect(() => {
-        setInp(value.toString())
+        setInp(value?.toString())
     }, [isVisible]);
 
     return (
@@ -33,7 +33,7 @@ const ModalText = ({isVisible, hide, title, value, placeholder, onConfirm}) => {
                         style={{height: 40, alignSelf: 'stretch', borderColor: styleColors.mainColor, paddingHorizontal: 20, borderBottomWidth: 1, marginTop: 20, marginBottom: 60, marginHorizontal: 40}}
                         ref={textInput}
                         placeholder={placeholder}
-                        defaultValue={value.toString()}
+                        defaultValue={value?.toString()}
                         keyboardType={'default'}
                         onChangeText={(text) => {
                             setInp(text);

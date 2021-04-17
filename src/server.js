@@ -139,6 +139,16 @@ const getAssets = ({token, success, fail}) => {
     });
 }
 
+const updateAsset = ({token, asset, success, fail}) => {
+    putToServer(`${URL}/asset`, {asset: asset}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
 const getRecords = ({token, success, fail}) => {
     getFromServer({
         url: `${URL}/record`,
@@ -185,4 +195,4 @@ const deleteRecord = ({token, record, success, fail}) => {
     });
 }
 
-export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, getRecords, addRecord, updateRecord, deleteRecord};
+export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, updateAsset, getRecords, addRecord, updateRecord, deleteRecord};

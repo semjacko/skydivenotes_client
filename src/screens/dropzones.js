@@ -2,12 +2,15 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getAssets} from '../server';
+import {getAssets, updateAsset} from '../server';
 import {connect} from 'react-redux';
+import {ModalText} from '../components/modal-text';
 
 const DropzonesContainer = (props) => {
     const [dropzones, setDropzones] = useState([]);
     const [isUpdate, setIsUpdate] = useState(false);  // update flatlistu
+    const [isModalEdit, setIsModalEdit] = useState(false);
+    const [editItem, setEditItem] = useState({});
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
@@ -20,6 +23,15 @@ const DropzonesContainer = (props) => {
         return unsubscribe;
     }, [props.navigation]);
 
+    const handleChanges = (updatedDropzone) => {
+        updateAsset({
+            token: props.globalState.token,
+            asset: updatedDropzone,
+            success: (data) => {setDropzones(data['dropzones']);},
+            fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        });
+    }
+
     const renderItem = ({item}) => {
         return (
             <View style={styles.personalItem}>
@@ -27,13 +39,10 @@ const DropzonesContainer = (props) => {
                 <Text style={{position: 'absolute', bottom: 5, right: 5}}>Počet: {'UNDEFINED'}</Text>
                 <TouchableOpacity
                     style={{position: 'absolute', top: 5, right: 5}}
-                    /*onPress={() => {
-                        setItemKey(item.key);
-                        setValue(item.title);
-                        setPlaceholder(placeholders[routeName]);
-                        setTitle(titlesEdit[routeName]);
+                    onPress={() => {
+                        setEditItem(item);
                         setIsModalEdit(!isModalEdit);
-                    }}*/
+                    }}
                 >
                     <MaterialIcons name={'edit'} size={20} color={styleColors.mainColor}/>
                 </TouchableOpacity>
@@ -64,16 +73,14 @@ const DropzonesContainer = (props) => {
                     }}
                 />
                 {/* MODALNE PRIDANIE PERSONAL ITEMU end */}
-                {/* MODALNE UPRAVENIE PERSONAL ITEMU begin 
+                {/* MODALNE UPRAVENIE ITEMU begin */}
                 <ModalText
                     isVisible={isModalEdit}
-                    setIsVisible={setIsModalEdit}
-                    title={title}
-                    value={value}
-                    placeholder={placeholder}
-                    onConfirm={(text) => {
-                        editPersonalItem(text);
-                    }}
+                    hide={() => {setIsModalEdit(false);}}
+                    title={'Upravenie názvu padáku'}
+                    value={editItem.title}
+                    placeholder={'Názov'}
+                    onConfirm={(text) => {handleChanges({...editItem, title: text});}}
                 />
                 {/* MODALNE UPRAVENIE PERSONAL ITEMU end */}
             </>
