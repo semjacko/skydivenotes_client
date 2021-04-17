@@ -111,7 +111,7 @@ const RecordsDetailContainer = (props) => {
                 <FontAwesome name={'cut'} size={22} color={'#000000'}/>
                 <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={styles.text1}>Odhod</Text>
-                    <Text style={[styles.label, {color: styleColors.mainColor}]}>{record['cutaway']}</Text>
+                    <Text style={[styles.label, {color: styleColors.mainColor}]}>{'UNDEFINED'}</Text>
                 </View>
             </View>
             <TouchableHighlight 

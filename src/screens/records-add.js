@@ -56,7 +56,7 @@ const RecordsAddContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Zoskok'}
-                value={`#${10}`}
+                value={`#${'UNDEFINED'}`}
                 icon={<FontAwesome5 name="hashtag" size={22} color={styleColors.labelColor} />}
                 editable={false}
             />
@@ -110,7 +110,7 @@ const RecordsAddContainer = (props) => {
                 <FontAwesome name={'cut'} size={22} color={'#000000'}/>
                 <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={styles.text1}>Odhod</Text>
-                    <Text style={[styles.label, {color: styleColors.mainColor}]}>0</Text>
+                    <Text style={[styles.label, {color: styleColors.mainColor}]}>UNDEFINED</Text>
                 </View>
             </View>
             <TouchableHighlight 

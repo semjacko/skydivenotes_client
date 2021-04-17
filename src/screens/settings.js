@@ -41,7 +41,7 @@ const SettingsContainer = (props) => {
             },
             fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
-    }, [])
+    }, []);
 
     const toggleModal = (modalVisibility) => {
         setModals({

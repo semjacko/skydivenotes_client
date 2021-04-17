@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         borderRadius: 8,
         marginVertical: 2,
+        elevation: 5,
         marginHorizontal: 5,
         backgroundColor: styleColors.secondColor,
     },

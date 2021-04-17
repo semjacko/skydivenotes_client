@@ -1,29 +1,86 @@
-import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
+import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableOpacity, FlatList} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {styles, styleColors} from '../styles'
+import {styles, styleColors} from '../styles';
+import {MaterialIcons} from '@expo/vector-icons';
+import {getAssets} from '../server';
+import {connect} from 'react-redux';
 
-const Categories = ({route}) => {
-    console.log(`${route.name}:${route.params?.token}`);
+const CategoriesContainer = (props) => {
+    const [categories, setCategories] = useState([]);
+    const [isUpdate, setIsUpdate] = useState(false);  // update flatlistu
 
-    //TODO data z databazy
-    /*useEffect(() => {
-        fetch(`http://18.196.156.172/user`)
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-            })
-            .catch((err) => console.log(err));
-    }, [])*/
+    useEffect(() => {
+        getAssets({
+            token: props.globalState.token,
+            success: (data) => {
+                setCategories(data['categories']);
+            },
+            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        });
+    }, []);
+
+    const renderItem = ({item}) => {
+        return (
+            <View style={styles.personalItem}>
+                <Text style={styles.text1}>{item.title}</Text>
+                <Text style={{position: 'absolute', bottom: 5, right: 5}}>Počet: {'UNDEFINED'}</Text>
+                <TouchableOpacity
+                    style={{position: 'absolute', top: 5, right: 5}}
+                    /*onPress={() => {
+                        setItemKey(item.key);
+                        setValue(item.title);
+                        setPlaceholder(placeholders[routeName]);
+                        setTitle(titlesEdit[routeName]);
+                        setIsModalEdit(!isModalEdit);
+                    }}*/
+                >
+                    <MaterialIcons name={'edit'} size={20} color={styleColors.mainColor}/>
+                </TouchableOpacity>
+            </View>
+        );
+    };
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.page}>
-                <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
-                <Text>Kategorie</Text>
-            </ScrollView>
-        </TouchableWithoutFeedback>
+        <View style={styles.page}>
+            <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
+            <FlatList
+                inverted={true}
+                extraData={isUpdate}
+                contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-end'}}  // aby isiel odhora (je inverted)
+                data={categories}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderItem}
+            />
+            {/* MODALNE begin */}
+            <>
+                {/* MODALNE PRIDANIE PERSONAL ITEMU begin 
+                <ModalAdd
+                    isVisible={isModalAdd}
+                    setIsVisible={setIsModalAdd}
+                    title={titlesAdd[routeName]}
+                    onAdd={(text) => {
+                        addPersonalItem(text);
+                    }}
+                />
+                {/* MODALNE PRIDANIE PERSONAL ITEMU end */}
+                {/* MODALNE UPRAVENIE PERSONAL ITEMU begin 
+                <ModalText
+                    isVisible={isModalEdit}
+                    setIsVisible={setIsModalEdit}
+                    title={title}
+                    value={value}
+                    placeholder={placeholder}
+                    onConfirm={(text) => {
+                        editPersonalItem(text);
+                    }}
+                />
+                {/* MODALNE UPRAVENIE PERSONAL ITEMU end */}
+            </>
+            {/* MODALNE end */}
+        </View>
     );
 }
 
+const Categories = connect(state => ({globalState: state}))(CategoriesContainer);
 
 export {Categories};
