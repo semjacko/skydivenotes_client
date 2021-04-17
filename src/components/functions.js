@@ -35,7 +35,7 @@ const altitude2seconds = (altitude) => {
         return 20;
     } else if (altitudeInt <= 3000) {
         return 40;
-    } else if (altitudeInt < 3000) {
+    } else if (altitudeInt > 3000) {
         return 60;
     }
 

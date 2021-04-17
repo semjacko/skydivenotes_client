@@ -68,14 +68,14 @@ const SignUpContainer = (props) => {
             email: data.email, 
             password: data.password,
             fullname: data.fullname,
-            license: 'A', 
-            licenseExpiration: '20200101', 
-            medicalExpiration: '20200101', 
-            personalWeight: 100,
-            parachuteID: 1, 
-            categoryID: 1, 
-            dropzoneID: 1, 
-            planeID: 1, 
+            license: 'Študent', 
+            licenseExpiration: '20201010', 
+            medicalExpiration: '20201010', 
+            personalWeight: 75,
+            parachuteID: -1, 
+            categoryID: -1, 
+            dropzoneID: -1, 
+            planeID: -1, 
             altitude: 3000
         }
 
@@ -89,7 +89,7 @@ const SignUpContainer = (props) => {
             return;
         }
 
-        postToServer('https://skydivenotes.sk/user', {user: user}, (status, data) => {
+        postToServer('https://skydivenotes.sk/user', {user: user}, null, (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
             } else {

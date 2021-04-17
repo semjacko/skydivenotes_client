@@ -2,10 +2,10 @@ import {StatusBar, View, Text, FlatList, Keyboard, TouchableWithoutFeedback, Scr
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
 import {connect} from 'react-redux';
-import {getFromServer} from '../server';
+import {getFromServer, postToServer} from '../server';
 import {ScrollDownButton} from '../components/scroll-down-button';
 import {Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome} from '@expo/vector-icons';
-import {date2SKformat} from '../components/functions';
+import {date2SKformat, altitude2seconds, date2USformat} from '../components/functions';
 
 const RecordsContainer = (props) => {
     let flatList = React.createRef();
@@ -16,18 +16,40 @@ const RecordsContainer = (props) => {
     
     useEffect(() => {
         getFromServer({
-            url: 'https://skydivenotes.sk/record', 
+            url: 'https://skydivenotes.sk/record',
             headers: {'Authorization': props.globalState.token},
             callback: (status, data) => {
                 if (status == 200) {
                     setFlatListData([...data])
-                    //props.dispatch({type: 'UPDATE_USER', user: data})
                 } else {
                     Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
                 }
             } 
         });
     }, [])
+
+    const onFastAddPress = () => {
+        let dateRaw = new Date();
+        let newRecord = {
+            parachuteID: props.globalState.user['parachuteID'], 
+            categoryID: props.globalState.user['categoryID'], 
+            dropzoneID: props.globalState.user['dropzoneID'], 
+            planeID: props.globalState.user['planeID'], 
+            date: date2USformat(`${dateRaw.getDate()}/${dateRaw.getMonth() + 1}/${dateRaw.getFullYear()}`), 
+            altitude: props.globalState.user['altitude'], 
+            timeFreeFall: altitude2seconds(props.globalState.user['altitude']), 
+            cutaway: false, 
+            note: '',
+        };
+        postToServer('https://skydivenotes.sk/record', {record: newRecord}, {'Authorization': props.globalState.token}, (status, data) => {
+            if (status == 200) {
+                setFlatListData([...data]);
+                setIsUpdate(!isUpdate);
+            } else {
+                Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
+            }
+        })
+    }
 
     const renderItem = ({item}) => {
         return (
@@ -37,7 +59,7 @@ const RecordsContainer = (props) => {
             >
                 <View style={styles.recordsItem}>
                     { /* ABSOLUTNE POZICIE begin */}
-                    <Text style={[styles.text1, {position: 'absolute', top: 5, left: 10}]}>#{item['jumpNO']}</Text>
+                    <Text style={[styles.text1, {position: 'absolute', top: 5, left: 10}]}>#{item['jumpNumber']}</Text>
                     <Text style={{position: 'absolute', top: 10, right: 10}}>{date2SKformat(item['date'])}</Text>
                     <Text style={{position: 'absolute', bottom: 10, right: 10}}>{item['dropzoneTitle']}</Text>
                     { /* ABSOLUTNE POZICIE end */}
@@ -68,7 +90,7 @@ const RecordsContainer = (props) => {
 
     return (
         <View style={styles.page}>
-            <StatusBar backgroundColor={styleColors.bgColor} barStyle='dark-content'/>
+            <StatusBar backgroundColor={styleColors.mainColor} barStyle='light-content'/>
             {/* ZOZNAM ZAZNAMOV begin */}
             <FlatList
                 inverted={true}
@@ -91,7 +113,7 @@ const RecordsContainer = (props) => {
             {/* MIESTO PRE TLACITKA begin */}
             <View style={{alignSelf: 'stretch'}}>
                 <TouchableOpacity
-                    //onPress={addRecord}
+                    onPress={onFastAddPress}
                     style={{alignSelf: 'center', margin: 10}}>
                     <Ionicons name="add-circle-sharp" size={70} color={styleColors.mainColor} />
                 </TouchableOpacity>

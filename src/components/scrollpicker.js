@@ -21,7 +21,7 @@ const ScrollPicker = ({width, highlightColor, data, initialKey, onSelect, style}
     const itemHeight = HEIGHT / ITEMS_COUNT;
     const flatList = useRef();
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const initialIndex = data.findIndex(e => e.key == initialKey);
+    const initialIndex = data.findIndex(e => e.id == initialKey);
 
     const onScroll = (event) => {
         let index = Math.round(event.nativeEvent.contentOffset.y / itemHeight);
@@ -47,12 +47,12 @@ const ScrollPicker = ({width, highlightColor, data, initialKey, onSelect, style}
                     flatList.current.scrollToIndex({index: index, animated: true, viewPosition: 0});
                 }}
             >
-                <Text style={{fontSize: textSizes[gap], opacity: opacities[gap], fontWeight: fontWeight, color: color}}>{item.value}</Text>
+                <Text style={{fontSize: textSizes[gap], opacity: opacities[gap], fontWeight: fontWeight, color: color}}>{item.value ? item.value : item.title}</Text>
             </TouchableOpacity>
         );
     }
 
-    const keyExtractor = (item) => item.key.toString();
+    const keyExtractor = (item) => item.id.toString();
 
     return (
         <View style={[style, {height: HEIGHT, width: width}]}>

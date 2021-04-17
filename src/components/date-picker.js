@@ -6,21 +6,21 @@ import {styles, styleColors} from '../styles';
 import {ModalUpperButtons} from './modal-buttons';
 import {date2USformat} from './functions';
 
-const YEARS = [...Array(60).keys()].map((e) => ({key: e + 1, value: e + 1990}));
+const YEARS = [...Array(60).keys()].map((e) => ({id: e + 1, value: e + 1990}));
 
 const MONTHS = [
-    {key: 1, value: 'Január'},
-    {key: 2, value: 'Február'},
-    {key: 3, value: 'Marec'},
-    {key: 4, value: 'Apríl'},
-    {key: 5, value: 'Máj'},
-    {key: 6, value: 'Jún'},
-    {key: 7, value: 'Júl'},
-    {key: 8, value: 'August'},
-    {key: 9, value: 'September'},
-    {key: 10, value: 'Október'},
-    {key: 11, value: 'November'},
-    {key: 12, value: 'December'}
+    {id: 1, value: 'Január'},
+    {id: 2, value: 'Február'},
+    {id: 3, value: 'Marec'},
+    {id: 4, value: 'Apríl'},
+    {id: 5, value: 'Máj'},
+    {id: 6, value: 'Jún'},
+    {id: 7, value: 'Júl'},
+    {id: 8, value: 'August'},
+    {id: 9, value: 'September'},
+    {id: 10, value: 'Október'},
+    {id: 11, value: 'November'},
+    {id: 12, value: 'December'}
 ];
 
 const getDaysOfMonthYear = (month, year) => {
@@ -30,7 +30,7 @@ const getDaysOfMonthYear = (month, year) => {
     } else if (month === 4 || month === 6 || month === 9 || month === 11) {
         len = 30;
     }
-    return [...Array(len).keys()].map((e) => ({key: e+1, value: e+1}));
+    return [...Array(len).keys()].map((e) => ({id: e+1, value: e+1}));
 }
 
 // onConfirm: ('yyyymmdd') => onConfirm
@@ -79,11 +79,11 @@ const DatePicker = ({isVisible, hide, initialDate, onConfirm}) => {
                         />
                         <ScrollPicker
                             data={MONTHS}
-                            initialKey={MONTHS.find(e => e.key == date.month).key}
+                            initialKey={MONTHS.find(e => e.id == date.month).id}
                             height={200}
                             width={110}
                             highlightColor={styleColors.mainColor}
-                            onSelect={(obj) => { setMonth(obj.key); }}
+                            onSelect={(obj) => { setMonth(obj.id); }}
                         />
                         <ScrollPicker
                             data={YEARS}

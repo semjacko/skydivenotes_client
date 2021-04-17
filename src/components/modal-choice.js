@@ -39,7 +39,7 @@ const ModalChoice = ({isVisible, hide, plus, onPlus, onConfirm, data, value}) =>
                     <View style={{alignSelf: 'stretch', alignItems: 'center', paddingHorizontal: 30}}>
                         <ScrollPicker
                             data={scrollPickerData}
-                            initialKey={value.key}
+                            initialKey={value.id}
                             width={200}
                             highlightColor={styleColors.mainColor}
                             onSelect={(val) => { setChoice(val) }}

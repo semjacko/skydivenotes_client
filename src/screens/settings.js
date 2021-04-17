@@ -8,11 +8,11 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {putToServer} from '../server';
+import {putToServer, getFromServer} from '../server';
 
-const LICENSES = [{key: 0, value: 'Študent'}, {key: 1, value: 'A'}, {key: 2, value: 'B'}, {key: 3, value: 'C'}, {key: 4, value: 'D'}];
-const WEIGHTS = [...Array(150).keys()].map((e) => ({key: e+1, value: e+1}));
-const ALTITUDES = [800, 1200, 1500, 2000, 3000, 4000];
+const LICENSES = [{id: 1, value: 'Študent'}, {id: 2, value: 'A'}, {id: 3, value: 'B'}, {id: 4, value: 'C'}, {id: 5, value: 'D'}];
+const WEIGHTS = [...Array(150).keys()].map((e) => ({id: e+1, value: e+1}));
+const ALTITUDES = [{id: 1, value: 800}, {id: 2, value: 1200}, {id: 3, value: 1500}, {id: 4, value: 2000}, {id: 5, value: 3000}, {id: 6, value: 4000}];
 
 const SettingsContainer = (props) => {
     const [parachutes, setParachutes] = useState([]);
@@ -32,6 +32,23 @@ const SettingsContainer = (props) => {
         isModalDropzone: false,
     });
 
+    useEffect(() => {
+        getFromServer({
+            url: 'https://skydivenotes.sk/asset',
+            headers: {'Authorization': props.globalState.token},
+            callback: (status, data) => {
+                if (status == 200) {
+                    setParachutes(data['parachutes']);
+                    setPlanes(data['planes']);
+                    setDropzones(data['dropzones']);
+                    setCategories(data['categories']);
+                } else {
+                    Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
+                }
+            } 
+        });
+    }, [])
+
     const toggleModal = (modalVisibility) => {
         setModals({
             ...modals,
@@ -46,7 +63,7 @@ const SettingsContainer = (props) => {
         }
         putToServer('https://skydivenotes.sk/user', {user: newUserData}, {'Authorization': props.globalState.token}, (status, data) => {
                 if (status == 200) {
-                    props.dispatch({type: 'UPDATE_USER', user: newUserData})
+                    props.dispatch({type: 'UPDATE_USER', user: data})
                 } else {
                     Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
                 }
@@ -105,14 +122,14 @@ const SettingsContainer = (props) => {
             <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold', marginTop: 15, marginBottom: 10}]}>Osobné nastavenia</Text>
             <DataRow
                 label={'Padák'}
-                value={props.globalState.user['parachuteID']}
+                value={props.globalState.user['parachuteTitle']}
                 icon={<MaterialCommunityIcons name="parachute" size={22} color={'#000000'} />}
                 editable={true}
                 onEdit={() => {toggleModal({isModalParachute: true});}}
             />
             <DataRow
                 label={'Kategória'}
-                value={props.globalState.user['categoryID']}
+                value={props.globalState.user['categoryTitle']}
                 icon={<MaterialIcons name={'category'} size={22} color={'#000000'}/>}
                 editable={true}
                 onEdit={() => {toggleModal({isModalCategory: true});}}
@@ -126,14 +143,14 @@ const SettingsContainer = (props) => {
             />
             <DataRow
                 label={'Lietadlo'}
-                value={props.globalState.user['planeID']}
+                value={props.globalState.user['planeTitle']}
                 icon={<MaterialCommunityIcons name={'airplane'} size={22} color={'#000000'}/>}
                 editable={true}
                 onEdit={() => {toggleModal({isModalPlane: true});}}
             />
             <DataRow
                 label={'Letisko'}
-                value={props.globalState.user['dropzoneID']}
+                value={props.globalState.user['dropzoneTitle']}
                 icon={<MaterialCommunityIcons name={'airport'} size={22} color={'#000000'} />}
                 editable={true}
                 onEdit={() => {toggleModal({isModalDropzone: true});}}
@@ -187,47 +204,47 @@ const SettingsContainer = (props) => {
                 hide={() => toggleModal({isModalLicenseExpiration: false})}
                 initialDate={props.globalState.user['licenseExpiration']}
                 onConfirm={(date) => {handleUserChanges({licenseExpiration: date})}}
-            />{/*
+            />
             <ModalChoice
                 isVisible={modals.isModalParachute}
                 hide={() => toggleModal({isModalParachute: false})}
                 data={parachutes}
-                valueKey={props.globalState.user['parachute']}
+                value={{id: props.globalState.user['parachuteID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {handleUserChanges({parachuteID: obj.id})}}
             />
             <ModalChoice
                 isVisible={modals.isModalCategory}
                 hide={() => toggleModal({isModalCategory: false})}
                 data={categories}
-                valueKey={props.globalState.user['category']}
+                value={{id: props.globalState.user['categoryID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {handleUserChanges({categoryID: obj.id})}}
             />
             <ModalChoice
                 isVisible={modals.isModalAltitude}
                 hide={() => toggleModal({isModalAltitude: false})}
                 data={ALTITUDES}
-                valueKey={props.globalState.user['altitude']}
+                value={ALTITUDES.find(e => e.value == props.globalState.user['altitude'])}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {handleUserChanges({altitude: obj.value})}}
             />
             <ModalChoice
                 isVisible={modals.isModalPlane}
                 hide={() => toggleModal({isModalPlane: false})}
                 data={planes}
-                valueKey={props.globalState.user['plane']}
+                value={{id: props.globalState.user['planeID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {handleUserChanges({planeID: obj.id})}}
             />
             <ModalChoice
                 isVisible={modals.isModalDropzone}
                 hide={() => toggleModal({isModalDropzone: false})}
                 data={dropzones}
-                valueKey={props.globalState.user['dropzone']}
+                value={{id: props.globalState.user['dropzoneID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
-            />*/}
+                onConfirm={(obj) => {handleUserChanges({dropzoneID: obj.id})}}
+            />
         </ScrollView> 
     );
 }
