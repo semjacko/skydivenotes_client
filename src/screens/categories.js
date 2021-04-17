@@ -10,14 +10,15 @@ const CategoriesContainer = (props) => {
     const [isUpdate, setIsUpdate] = useState(false);  // update flatlistu
 
     useEffect(() => {
-        getAssets({
-            token: props.globalState.token,
-            success: (data) => {
-                setCategories(data['categories']);
-            },
-            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getAssets({
+                token: props.globalState.token,
+                success: (data) => {setCategories(data['categories']);},
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
         });
-    }, []);
+        return unsubscribe;
+    }, [props.navigation]);
 
     const renderItem = ({item}) => {
         return (

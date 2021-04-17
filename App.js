@@ -27,6 +27,7 @@ const initialState = {
     jumpsQty: 0
   },
   token: '',
+  records: [],
   isSignedIn: false
 }
 
@@ -42,6 +43,9 @@ const reducer = (state = initialState, action) => {
       break;
     case 'UPDATE_USER':
       state.user = {...action.user};
+      break;
+    case 'UPDATE_RECORDS':
+      state.records = [...action.records];
       break;
   }
   return {...state}

@@ -23,16 +23,19 @@ const ProfileContainer = (props) => {
     });
 
     useEffect(() => {
-        getUserData({
-            token: props.globalState.token,
-            success: (userData) => {
-                setCalculator({...calculator, weight: userData['personalWeight']});
-                props.dispatch({type: 'UPDATE_USER', user: userData})
-            },
-            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getUserData({
+                token: props.globalState.token,
+                success: (userData) => {
+                    setCalculator({...calculator, weight: userData['personalWeight']});
+                    props.dispatch({type: 'UPDATE_USER', user: userData})
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
         });
-    }, [])
-
+        return unsubscribe;
+    }, [props.navigation]);
+    
     useEffect(() => {
         let weightFloat = parseFloat(calculator['weight']);
         let wingSizeFloat = parseFloat(calculator['wingSize']);

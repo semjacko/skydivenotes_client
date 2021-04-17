@@ -10,17 +10,22 @@ import {date2SKformat, altitude2seconds, date2USformat} from '../components/func
 const RecordsContainer = (props) => {
     let flatList = React.createRef();
 
-    const [flatListData, setFlatListData] = useState([]);  // data pre flatlist
     const [isUpdate, setIsUpdate] = useState(false);  // update flatlistu
     const [isScrolled, setIsScrolled] = useState(false);  // ak je true tak sa zobrazi sipka dole
     
     useEffect(() => {
-        getRecords({
-            token: props.globalState.token,
-            success: (data) => {setFlatListData(data);},
-            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getRecords({
+                token: props.globalState.token,
+                success: (data) => {
+                    props.dispatch({type: 'UPDATE_RECORDS', records: data});
+                    setIsUpdate(!isUpdate);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
         });
-    }, [])
+        return unsubscribe;
+    }, [props.navigation]);
 
     const onFastAddPress = () => {
         let dateRaw = new Date();
@@ -40,7 +45,7 @@ const RecordsContainer = (props) => {
             token: props.globalState.token,
             record: newRecord,
             success: (data) => {
-                setFlatListData(data);
+                props.dispatch({type: 'UPDATE_RECORDS', records: data});
                 setIsUpdate(!isUpdate);
             },
             fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
@@ -93,7 +98,7 @@ const RecordsContainer = (props) => {
                 extraData={isUpdate}
                 contentContainerStyle={{flexGrow: 1, justifyContent: 'flex-end'}}  // aby isiel odhora (je inverted)
                 ref={flatList}
-                data={flatListData}
+                data={props.globalState.records}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 onScroll={({nativeEvent}) => {
@@ -119,7 +124,7 @@ const RecordsContainer = (props) => {
                     bottom={50}
                     right={10}
                     size={40}
-                    color={'#ffffff'}
+                    color={styleColors.mainColor}
                 />
             </View>
             {/* MIESTO PRE TLACITKA end */}
