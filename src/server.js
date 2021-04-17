@@ -1,6 +1,7 @@
 import React from 'react';
 import {Alert} from 'react-native';
 import { call } from 'react-native-reanimated';
+import {URL} from '../constants';
 
 const getFromServer = ({url, headers, callback}) => {
     return (
@@ -66,4 +67,81 @@ const putToServer = (url, sendData, headers, callback) => {
 }
 
 
-export {getFromServer, postToServer, putToServer};
+const signInUser = ({email, password, success, fail}) => {
+    getFromServer({
+        url: `${URL}/token?email=${email}&password=${password}`, 
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data['token']);
+            } else {
+                fail(status);
+            }
+        }
+    });
+}
+
+const getUserData = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/user`, 
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const updateUserData = ({token, userData, success, fail}) => {
+    putToServer(`${URL}/user`, {user: userData}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+const getAssets = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/asset`,
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const getRecords = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/record`,
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                data.sort((a, b) => b['jumpNumber'] - a['jumpNumber']);
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const addRecord = ({token, record, success, fail}) => {
+    postToServer(`${URL}/record`, {record: record}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            data.sort((a, b) => b['jumpNumber'] - a['jumpNumber']);
+            success(data);
+        } else {
+            fail();
+        }
+    })
+}
+
+export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, getRecords, addRecord};

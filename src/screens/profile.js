@@ -4,8 +4,7 @@ import {styles, styleColors} from '../styles';
 import {calcWingLoad, date2SKformat, seconds2HHMMSS} from '../components/functions';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
-import {getFromServer} from '../server';
-import {URL} from '../../constants';
+import {getUserData} from '../server';
 
 const LabeledValue = ({label, value, align}) => {
     return (
@@ -24,17 +23,13 @@ const ProfileContainer = (props) => {
     });
 
     useEffect(() => {
-        getFromServer({
-            url: `${URL}/user`, 
-            headers: {'Authorization': props.globalState.token},
-            callback: (status, data) => {
-                if (status == 200) {
-                    setCalculator({...calculator, weight: data['personalWeight']});
-                    props.dispatch({type: 'UPDATE_USER', user: data})
-                } else {
-                    Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-                }
-            } 
+        getUserData({
+            token: props.globalState.token,
+            success: (userData) => {
+                setCalculator({...calculator, weight: userData['personalWeight']});
+                props.dispatch({type: 'UPDATE_USER', user: userData})
+            },
+            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
     }, [])
 

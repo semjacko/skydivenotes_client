@@ -5,6 +5,7 @@ import {styles, styleColors} from '../styles';
 import {postToServer} from '../server';
 import {connect} from 'react-redux';
 import {URL} from '../../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignUpContainer = (props) => {
     const [data, setData] = useState({
@@ -92,6 +93,11 @@ const SignUpContainer = (props) => {
 
         postToServer(`${URL}/user`, {user: user}, null, (status, data) => {
             if (status == 200) {
+                try {
+                    AsyncStorage.setItem('@token', data['token'])
+                } catch(e) {
+                // TODO save error
+                }
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
             } else {
                 Alert.alert('Email už existuje!', 'Zadaný email už v databáze existuje', [{text: 'Ok'}]);

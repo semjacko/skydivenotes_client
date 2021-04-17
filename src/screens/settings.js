@@ -1,15 +1,16 @@
 import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
-import {getStoredData, date2USformat, date2SKformat} from '../components/functions';
+import {date2USformat, date2SKformat} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {putToServer, getFromServer} from '../server';
-import {URL, LICENSES, WEIGHTS, ALTITUDES} from '../../constants';
+import {updateUserData, getAssets} from '../server';
+import {LICENSES, WEIGHTS, ALTITUDES} from '../../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsContainer = (props) => {
     const [parachutes, setParachutes] = useState([]);
@@ -30,19 +31,15 @@ const SettingsContainer = (props) => {
     });
 
     useEffect(() => {
-        getFromServer({
-            url: `${URL}/asset`,
-            headers: {'Authorization': props.globalState.token},
-            callback: (status, data) => {
-                if (status == 200) {
-                    setParachutes(data['parachutes']);
-                    setPlanes(data['planes']);
-                    setDropzones(data['dropzones']);
-                    setCategories(data['categories']);
-                } else {
-                    Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-                }
-            } 
+        getAssets({
+            token: props.globalState.token,
+            success: (data) => {
+                setParachutes(data['parachutes']);
+                setPlanes(data['planes']);
+                setDropzones(data['dropzones']);
+                setCategories(data['categories']);
+            },
+            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
     }, [])
 
@@ -58,12 +55,12 @@ const SettingsContainer = (props) => {
             ...props.globalState.user,
             ...user
         }
-        putToServer(`${URL}/user`, {user: newUserData}, {'Authorization': props.globalState.token}, (status, data) => {
-                if (status == 200) {
-                    props.dispatch({type: 'UPDATE_USER', user: data})
-                } else {
-                    Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-                }
+        
+        updateUserData({
+            token: props.globalState.token,
+            userData: newUserData,
+            success: (data) => {props.dispatch({type: 'UPDATE_USER', user: data});},
+            fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
     }
 
@@ -156,7 +153,10 @@ const SettingsContainer = (props) => {
             <TouchableHighlight 
                 activeOpacity={0.6} 
                 underlayColor={styleColors.mainColor}
-                onPress={() => {props.dispatch({type: 'SIGN_OUT'});}}
+                onPress={() => {
+                    AsyncStorage.removeItem('@token')
+                    props.dispatch({type: 'SIGN_OUT'});
+                }}
             >
                 <View style={styles.editableRow}>
                     <MaterialCommunityIcons name={'logout'} size={22} color={styleColors.red} />

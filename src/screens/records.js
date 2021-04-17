@@ -2,11 +2,10 @@ import {StatusBar, View, Text, FlatList, Keyboard, TouchableWithoutFeedback, Scr
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
 import {connect} from 'react-redux';
-import {getFromServer, postToServer} from '../server';
+import {addRecord, getRecords} from '../server';
 import {ScrollDownButton} from '../components/scroll-down-button';
 import {Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome} from '@expo/vector-icons';
 import {date2SKformat, altitude2seconds, date2USformat} from '../components/functions';
-import {URL} from '../../constants';
 
 const RecordsContainer = (props) => {
     let flatList = React.createRef();
@@ -16,16 +15,10 @@ const RecordsContainer = (props) => {
     const [isScrolled, setIsScrolled] = useState(false);  // ak je true tak sa zobrazi sipka dole
     
     useEffect(() => {
-        getFromServer({
-            url: `${URL}/record`,
-            headers: {'Authorization': props.globalState.token},
-            callback: (status, data) => {
-                if (status == 200) {
-                    setFlatListData([...data])
-                } else {
-                    Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-                }
-            } 
+        getRecords({
+            token: props.globalState.token,
+            success: (data) => {setFlatListData(data);},
+            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
     }, [])
 
@@ -42,14 +35,16 @@ const RecordsContainer = (props) => {
             cutaway: false, 
             note: '',
         };
-        postToServer(`${URL}/record`, {record: newRecord}, {'Authorization': props.globalState.token}, (status, data) => {
-            if (status == 200) {
-                setFlatListData([...data]);
+
+        addRecord({
+            token: props.globalState.token,
+            record: newRecord,
+            success: (data) => {
+                setFlatListData(data);
                 setIsUpdate(!isUpdate);
-            } else {
-                Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-            }
-        })
+            },
+            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        });
     }
 
     const renderItem = ({item}) => {
@@ -81,7 +76,7 @@ const RecordsContainer = (props) => {
                     </View>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <FontAwesome name={'cut'} size={18} color={'black'} />
-                        <View style={{marginLeft: 5, width: 15, height: 15, borderRadius: 15 / 2, backgroundColor: item.cutaway ? styleColors.mainColor : 'white'}}/>
+                        <Text style={{marginLeft: 5}}>{item.cutaway ? 'Áno' : 'Nie'}</Text>
                     </View>
                     { /* INFO O ZOSKOKU end */}
                 </View>

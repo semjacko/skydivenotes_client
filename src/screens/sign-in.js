@@ -2,14 +2,26 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, StatusBar, Keyboard, Alert} from 'react-native';
 import {Feather, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
-import {getFromServer} from '../server';
+import {signInUser} from '../server';
 import {styles, styleColors} from '../styles';
-import {URL} from '../../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignInContainer = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [secureTextEntry, setSecureTextEntry] = useState(true);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        AsyncStorage.getItem('@token').then((token) => {
+            setLoading(false);
+            if (token) {
+                props.dispatch({type: 'SIGN_IN', token: token});
+            }
+        });
+    }, []);
+
+    if (loading) return null;
 
     const handleEmailChange = (text) => {
         setEmail(text.trim());
@@ -29,15 +41,19 @@ const SignInContainer = (props) => {
             Alert.alert('Nesprávne údaje!', 'Email a heslo nesmú byť prázdne.', [{text: 'Ok'}]);
             return;
         }
-        getFromServer({
-            url: `${URL}/token?email=${email}&password=${password}`, 
-            callback: (status, data) => {
-            if (status == 200) {
-                props.dispatch({type: 'SIGN_IN', token: data['token']})
-            } else {
-                Alert.alert('Nesprávne údaje!', 'Zadali ste nesprávny email alebo heslo', [{text: 'Ok'}]);
-            }
-        }});
+        signInUser({
+            email: email, 
+            password: password, 
+            success: (token) => {
+                try {
+                    AsyncStorage.setItem('@token', token)
+                } catch(e) {
+                // TODO save error
+                }
+                props.dispatch({type: 'SIGN_IN', token: token});                  
+            },
+            fail:() => {Alert.alert('Nesprávne údaje!', 'Zadali ste nesprávny email alebo heslo', [{text: 'Ok'}]);}
+        });
     }
 
     return (
