@@ -20,7 +20,6 @@ const SignNavigationContainer = (props) => {
                 name={'signIn'}
                 component={SignIn}
                 options={() => ({
-                    title: 'Prihlásenie',
                     headerShown: false
                 })}
             />

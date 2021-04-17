@@ -1,4 +1,4 @@
-import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableHighlight} from 'react-native';
+import {StatusBar, View, Text, TextInput, ScrollView, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
 import {date2USformat, date2SKformat} from '../components/functions';
@@ -65,6 +65,7 @@ const SettingsContainer = (props) => {
     }
 
     return (
+        <>
         <ScrollView style={styles.page}>
             <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
             {/* NASTAVOVANIE PROFILU begin */}
@@ -166,83 +167,84 @@ const SettingsContainer = (props) => {
                 </View>
             </TouchableHighlight>
             {/* SETTINGS end */}
-            <ModalText
-                isVisible={modals.isModalName}
-                hide={() => toggleModal({isModalName: false})}
-                title={'Nastavenie mena'}
-                value={props.globalState.user['fullname']}
-                placeholder={'Meno Priezvisko'}
-                onConfirm={(value) => {handleUserChanges({fullname: value})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalWeight}
-                hide={() => toggleModal({isModalWeight: false})}
-                data={WEIGHTS}
-                value={WEIGHTS.find(e => e.value == props.globalState.user['personalWeight'])}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({personalWeight: obj.value})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalLicense}
-                hide={() => toggleModal({isModalLicense: false})}
-                data={LICENSES}
-                value={LICENSES.find(e => e.value == props.globalState.user['license'])}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({license: obj.value})}}
-            />
-            <DatePicker
-                isVisible={modals.isModalMedicalExpiration}
-                hide={() => toggleModal({isModalMedicalExpiration: false})}
-                initialDate={props.globalState.user['medicalExpiration']}
-                onConfirm={(date) => {handleUserChanges({medicalExpiration: date})}}
-            />
-            <DatePicker
-                isVisible={modals.isModalLicenseExpiration}
-                hide={() => toggleModal({isModalLicenseExpiration: false})}
-                initialDate={props.globalState.user['licenseExpiration']}
-                onConfirm={(date) => {handleUserChanges({licenseExpiration: date})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalParachute}
-                hide={() => toggleModal({isModalParachute: false})}
-                data={parachutes}
-                value={{id: props.globalState.user['parachuteID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({parachuteID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalCategory}
-                hide={() => toggleModal({isModalCategory: false})}
-                data={categories}
-                value={{id: props.globalState.user['categoryID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({categoryID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalAltitude}
-                hide={() => toggleModal({isModalAltitude: false})}
-                data={ALTITUDES}
-                value={ALTITUDES.find(e => e.value == props.globalState.user['altitude'])}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({altitude: obj.value})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalPlane}
-                hide={() => toggleModal({isModalPlane: false})}
-                data={planes}
-                value={{id: props.globalState.user['planeID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({planeID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalDropzone}
-                hide={() => toggleModal({isModalDropzone: false})}
-                data={dropzones}
-                value={{id: props.globalState.user['dropzoneID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({dropzoneID: obj.id})}}
-            />
-        </ScrollView> 
+        </ScrollView>
+        <ModalText
+            isVisible={modals.isModalName}
+            hide={() => toggleModal({isModalName: false})}
+            title={'Nastavenie mena'}
+            value={props.globalState.user['fullname']}
+            placeholder={'Meno Priezvisko'}
+            onConfirm={(value) => {handleUserChanges({fullname: value})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalWeight}
+            hide={() => toggleModal({isModalWeight: false})}
+            data={WEIGHTS}
+            value={WEIGHTS.find(e => e.value == props.globalState.user['personalWeight'])}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({personalWeight: obj.value})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalLicense}
+            hide={() => toggleModal({isModalLicense: false})}
+            data={LICENSES}
+            value={LICENSES.find(e => e.value == props.globalState.user['license'])}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({license: obj.value})}}
+        />
+        <DatePicker
+            isVisible={modals.isModalMedicalExpiration}
+            hide={() => toggleModal({isModalMedicalExpiration: false})}
+            initialDate={props.globalState.user['medicalExpiration']}
+            onConfirm={(date) => {handleUserChanges({medicalExpiration: date})}}
+        />
+        <DatePicker
+            isVisible={modals.isModalLicenseExpiration}
+            hide={() => toggleModal({isModalLicenseExpiration: false})}
+            initialDate={props.globalState.user['licenseExpiration']}
+            onConfirm={(date) => {handleUserChanges({licenseExpiration: date})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalParachute}
+            hide={() => toggleModal({isModalParachute: false})}
+            data={parachutes}
+            value={{id: props.globalState.user['parachuteID']}}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({parachuteID: obj.id})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalCategory}
+            hide={() => toggleModal({isModalCategory: false})}
+            data={categories}
+            value={{id: props.globalState.user['categoryID']}}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({categoryID: obj.id})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalAltitude}
+            hide={() => toggleModal({isModalAltitude: false})}
+            data={ALTITUDES}
+            value={ALTITUDES.find(e => e.value == props.globalState.user['altitude'])}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({altitude: obj.value})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalPlane}
+            hide={() => toggleModal({isModalPlane: false})}
+            data={planes}
+            value={{id: props.globalState.user['planeID']}}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({planeID: obj.id})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalDropzone}
+            hide={() => toggleModal({isModalDropzone: false})}
+            data={dropzones}
+            value={{id: props.globalState.user['dropzoneID']}}
+            plus={false}
+            onConfirm={(obj) => {handleUserChanges({dropzoneID: obj.id})}}
+        />
+        </>
     );
 }
 

@@ -23,6 +23,7 @@ const RecordsNavigation = ({route}) => {
                 component={Records}
                 options={({navigation}) => ({
                     title: 'Záznamy',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }}>
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial}/>
@@ -42,6 +43,7 @@ const RecordsNavigation = ({route}) => {
                 component={RecordsDetail}
                 options={ () => ({
                     title: 'Detail záznamu',
+                    headerTitleAlign: 'center',
                     headerRight: () => (
                         // po stlaceni smetiaka sa emitne event DeleteRecordPressed ktory potom zachyti komponent RecordsDetail
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit('DeleteRecordPressed'); }}>
@@ -56,6 +58,7 @@ const RecordsNavigation = ({route}) => {
                 component={RecordsAdd}
                 options={{
                     title: 'Pridanie záznamu',
+                    headerTitleAlign: 'center',
                     headerRight: () => (
                         // po stlaceni kazetky sa emitne savePressed event ktory potom zachyti komponent RecordsAdd
                         <TouchableOpacity onPress={() => { DeviceEventEmitter.emit('SaveRecordPressed'); }}>

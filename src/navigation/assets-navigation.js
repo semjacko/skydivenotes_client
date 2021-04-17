@@ -89,6 +89,7 @@ const ParachutesTopMenu = ({route}) => {
                 component={Parachutes}
                 options={({navigation}) => ({
                     title: 'Moje padáky',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
@@ -115,6 +116,7 @@ const DropzonesTopMenu = ({route}) => {
                 component={Dropzones}
                 options={({navigation}) => ({
                     title: 'Moje letiská',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
@@ -141,6 +143,7 @@ const PlanesTopMenu = ({route}) => {
                 component={Planes}
                 options={({navigation}) => ({
                     title: 'Moje lietadlá',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
@@ -167,6 +170,7 @@ const CategoriesTopMenu = ({route}) => {
                 component={Categories}
                 options={({navigation}) => ({
                     title: 'Moje kategórie',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />

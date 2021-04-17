@@ -22,6 +22,7 @@ const ProfileNavigation = ({route}) => {
                 component={Profile}
                 options={({navigation}) => ({
                     title: 'Profil',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => { navigation.openDrawer(); }} >
                             <MaterialIcons name={'menu'} size={40} color={styleColors.textColorSpecial} />
@@ -40,7 +41,8 @@ const ProfileNavigation = ({route}) => {
                 name={'settings'}
                 component={Settings}
                 options={{
-                    title: 'Nastavenia'
+                    title: 'Nastavenia',
+                    headerTitleAlign: 'center'
                 }}
             />
             {/* Nastavenia end */}
