@@ -6,6 +6,7 @@ import {getFromServer, postToServer} from '../server';
 import {ScrollDownButton} from '../components/scroll-down-button';
 import {Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome} from '@expo/vector-icons';
 import {date2SKformat, altitude2seconds, date2USformat} from '../components/functions';
+import {URL} from '../../constants';
 
 const RecordsContainer = (props) => {
     let flatList = React.createRef();
@@ -16,7 +17,7 @@ const RecordsContainer = (props) => {
     
     useEffect(() => {
         getFromServer({
-            url: 'https://skydivenotes.sk/record',
+            url: `${URL}/record`,
             headers: {'Authorization': props.globalState.token},
             callback: (status, data) => {
                 if (status == 200) {
@@ -41,7 +42,7 @@ const RecordsContainer = (props) => {
             cutaway: false, 
             note: '',
         };
-        postToServer('https://skydivenotes.sk/record', {record: newRecord}, {'Authorization': props.globalState.token}, (status, data) => {
+        postToServer(`${URL}/record`, {record: newRecord}, {'Authorization': props.globalState.token}, (status, data) => {
             if (status == 200) {
                 setFlatListData([...data]);
                 setIsUpdate(!isUpdate);

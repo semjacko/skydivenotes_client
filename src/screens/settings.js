@@ -9,10 +9,7 @@ import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
 import {putToServer, getFromServer} from '../server';
-
-const LICENSES = [{id: 1, value: 'Študent'}, {id: 2, value: 'A'}, {id: 3, value: 'B'}, {id: 4, value: 'C'}, {id: 5, value: 'D'}];
-const WEIGHTS = [...Array(150).keys()].map((e) => ({id: e+1, value: e+1}));
-const ALTITUDES = [{id: 1, value: 800}, {id: 2, value: 1200}, {id: 3, value: 1500}, {id: 4, value: 2000}, {id: 5, value: 3000}, {id: 6, value: 4000}];
+import {URL, LICENSES, WEIGHTS, ALTITUDES} from '../../constants';
 
 const SettingsContainer = (props) => {
     const [parachutes, setParachutes] = useState([]);
@@ -34,7 +31,7 @@ const SettingsContainer = (props) => {
 
     useEffect(() => {
         getFromServer({
-            url: 'https://skydivenotes.sk/asset',
+            url: `${URL}/asset`,
             headers: {'Authorization': props.globalState.token},
             callback: (status, data) => {
                 if (status == 200) {
@@ -61,7 +58,7 @@ const SettingsContainer = (props) => {
             ...props.globalState.user,
             ...user
         }
-        putToServer('https://skydivenotes.sk/user', {user: newUserData}, {'Authorization': props.globalState.token}, (status, data) => {
+        putToServer(`${URL}/user`, {user: newUserData}, {'Authorization': props.globalState.token}, (status, data) => {
                 if (status == 200) {
                     props.dispatch({type: 'UPDATE_USER', user: data})
                 } else {

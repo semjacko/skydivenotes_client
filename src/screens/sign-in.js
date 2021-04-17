@@ -4,6 +4,7 @@ import {Feather, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {getFromServer} from '../server';
 import {styles, styleColors} from '../styles';
+import {URL} from '../../constants';
 
 const SignInContainer = (props) => {
     const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ const SignInContainer = (props) => {
             return;
         }
         getFromServer({
-            url: `https://skydivenotes.sk/token?email=${email}&password=${password}`, 
+            url: `${URL}/token?email=${email}&password=${password}`, 
             callback: (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})

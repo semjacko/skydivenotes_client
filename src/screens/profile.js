@@ -5,6 +5,7 @@ import {calcWingLoad, date2SKformat, seconds2HHMMSS} from '../components/functio
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {getFromServer} from '../server';
+import {URL} from '../../constants';
 
 const LabeledValue = ({label, value, align}) => {
     return (
@@ -24,7 +25,7 @@ const ProfileContainer = (props) => {
 
     useEffect(() => {
         getFromServer({
-            url: 'https://skydivenotes.sk/user', 
+            url: `${URL}/user`, 
             headers: {'Authorization': props.globalState.token},
             callback: (status, data) => {
                 if (status == 200) {

@@ -4,6 +4,7 @@ import {FontAwesome, Feather, MaterialIcons} from '@expo/vector-icons';
 import {styles, styleColors} from '../styles';
 import {postToServer} from '../server';
 import {connect} from 'react-redux';
+import {URL} from '../../constants';
 
 const SignUpContainer = (props) => {
     const [data, setData] = useState({
@@ -89,7 +90,7 @@ const SignUpContainer = (props) => {
             return;
         }
 
-        postToServer('https://skydivenotes.sk/user', {user: user}, null, (status, data) => {
+        postToServer(`${URL}/user`, {user: user}, null, (status, data) => {
             if (status == 200) {
                 props.dispatch({type: 'SIGN_IN', token: data['token']})
             } else {
