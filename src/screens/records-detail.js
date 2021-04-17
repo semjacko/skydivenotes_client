@@ -1,17 +1,18 @@
-import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, ScrollView, TouchableHighlight} from 'react-native';
+import {StatusBar, View, Text, Switch, Keyboard, DeviceEventEmitter, ScrollView, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
-import {getStoredData, date2USformat, date2SKformat} from '../components/functions';
+import {getStoredData, date2USformat, date2SKformat, altitude2seconds} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {putToServer} from '../server';
+import {updateRecord, deleteRecord} from '../server';
+import {ALTITUDES} from '../../constants';
 
 const RecordsDetailContainer = (props) => {
-    let record = props.route?.params?.record;
+    const [record, setRecord] = useState(props.route?.params?.record);
 
     const [modals, setModals] = useState({
         isModalDate: false,
@@ -30,19 +31,34 @@ const RecordsDetailContainer = (props) => {
         });
     }
 
-    /*const handleUserChanges = (user) => {
-        let newRecordData = {
-            ...props.globalState.user,
-            ...user
-        }
-        putToServer('https://skydivenotes.sk/user', {user: newUserData}, {'Authorization': props.globalState.token}, (status, data) => {
-                if (status == 200) {
-                    props.dispatch({type: 'UPDATE_USER', user: newUserData})
-                } else {
-                    Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);
-                }
+    useEffect(() => {
+        // pridanie listeneru na event zo stack navigatora (kliknutie save vpravo hore)
+        let listener = DeviceEventEmitter.addListener('DeleteRecordPressed', () => {
+            deleteRecord({
+                token: props.globalState.token,
+                record: record,
+                success: (data) => {
+                    props.dispatch({type: 'UPDATE_RECORDS', records: data});
+                    props.navigation.goBack();
+                },
+                fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
         });
-    }*/
+
+        return () => {
+            listener.remove();
+        }
+    }, [])
+
+
+    useEffect(() => {
+        updateRecord({
+            token: props.globalState.token,
+            record: record,
+            success: (data) => {props.dispatch({type: 'UPDATE_RECORDS', records: data});},
+            fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        });
+    }, [record]); 
 
     return (
         <ScrollView style={styles.page}>
@@ -57,7 +73,7 @@ const RecordsDetailContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Zoskok'}
-                value={`#${record['jumpNumber']}`}
+                value={`#${'UNDEFINED'}`}
                 icon={<FontAwesome5 name="hashtag" size={22} color={styleColors.labelColor} />}
                 editable={false}
             />
@@ -111,7 +127,15 @@ const RecordsDetailContainer = (props) => {
                 <FontAwesome name={'cut'} size={22} color={'#000000'}/>
                 <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={styles.text1}>Odhod</Text>
-                    <Text style={[styles.label, {color: styleColors.mainColor}]}>{'UNDEFINED'}</Text>
+                    <Switch
+                        style={{transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }]}}
+                        trackColor={{true: styleColors.mainColor, false: styleColors.faded}}
+                        thumbColor={styleColors.textColorSpecial}
+                        onValueChange={(value) => {
+                            setRecord({...record, 'cutaway': value});
+                        }}
+                        value={record['cutaway'] == 1}
+                    />
                 </View>
             </View>
             <TouchableHighlight 
@@ -128,83 +152,55 @@ const RecordsDetailContainer = (props) => {
                     <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor}/>
                 </View>
             </TouchableHighlight>
-            {/*
-            <ModalText
-                isVisible={modals.isModalName}
-                hide={() => toggleModal({isModalName: false})}
-                title={'Nastavenie mena'}
-                value={props.globalState.user['fullname']}
-                placeholder={'Meno Priezvisko'}
-                onConfirm={(value) => {handleUserChanges({fullname: value})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalWeight}
-                hide={() => toggleModal({isModalWeight: false})}
-                data={WEIGHTS}
-                value={WEIGHTS.find(e => e.value == props.globalState.user['personalWeight'])}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({personalWeight: obj.value})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalLicense}
-                hide={() => toggleModal({isModalLicense: false})}
-                data={LICENSES}
-                value={LICENSES.find(e => e.value == props.globalState.user['license'])}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({license: obj.value})}}
-            />
+            
             <DatePicker
-                isVisible={modals.isModalMedicalExpiration}
-                hide={() => toggleModal({isModalMedicalExpiration: false})}
-                initialDate={props.globalState.user['medicalExpiration']}
-                onConfirm={(date) => {handleUserChanges({medicalExpiration: date})}}
-            />
-            <DatePicker
-                isVisible={modals.isModalLicenseExpiration}
-                hide={() => toggleModal({isModalLicenseExpiration: false})}
-                initialDate={props.globalState.user['licenseExpiration']}
-                onConfirm={(date) => {handleUserChanges({licenseExpiration: date})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalParachute}
-                hide={() => toggleModal({isModalParachute: false})}
-                data={parachutes}
-                valueKey={props.globalState.user['parachute']}
-                plus={false}
-                onConfirm={(value) => {console.log(value)}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalCategory}
-                hide={() => toggleModal({isModalCategory: false})}
-                data={categories}
-                valueKey={props.globalState.user['category']}
-                plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                isVisible={modals.isModalDate}
+                hide={() => toggleModal({isModalDate: false})}
+                initialDate={record['date']}
+                onConfirm={(date) => {setRecord({...record, 'date': date});}}
             />
             <ModalChoice
                 isVisible={modals.isModalAltitude}
                 hide={() => toggleModal({isModalAltitude: false})}
                 data={ALTITUDES}
-                valueKey={props.globalState.user['altitude']}
+                value={ALTITUDES.find(e => e.value == record['altitude'])}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {setRecord({...record, 'altitude': obj.value, 'timeFreeFall': altitude2seconds(obj.value)});}}
+            />
+            {/*
+            <ModalChoice
+                isVisible={modals.isModalParachute}
+                hide={() => toggleModal({isModalParachute: false})}
+                data={parachutes}
+                value={{id: props.globalState.user['parachuteID']}}
+                plus={false}
+                onConfirm={(obj) => {handleUserChanges({parachuteID: obj.id})}}
+            />
+            <ModalChoice
+                isVisible={modals.isModalCategory}
+                hide={() => toggleModal({isModalCategory: false})}
+                data={categories}
+                value={{id: props.globalState.user['categoryID']}}
+                plus={false}
+                onConfirm={(obj) => {handleUserChanges({categoryID: obj.id})}}
             />
             <ModalChoice
                 isVisible={modals.isModalPlane}
                 hide={() => toggleModal({isModalPlane: false})}
                 data={planes}
-                valueKey={props.globalState.user['plane']}
+                value={{id: props.globalState.user['planeID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
+                onConfirm={(obj) => {handleUserChanges({planeID: obj.id})}}
             />
             <ModalChoice
                 isVisible={modals.isModalDropzone}
                 hide={() => toggleModal({isModalDropzone: false})}
                 data={dropzones}
-                valueKey={props.globalState.user['dropzone']}
+                value={{id: props.globalState.user['dropzoneID']}}
                 plus={false}
-                onConfirm={(value) => {console.log(value)}}
-            />*/}
+                onConfirm={(obj) => {handleUserChanges({dropzoneID: obj.id})}}
+            />
+            */}
         </ScrollView> 
     );
 }

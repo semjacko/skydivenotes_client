@@ -63,7 +63,28 @@ const putToServer = (url, sendData, headers, callback) => {
         })
         .then(([status, data]) => callback(status, data))
         .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
-    //callback(200, null);
+}
+
+const deleteFromServer = (url, sendData, headers, callback) => {
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            ...headers,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sendData)
+    })
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
+            }
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => callback(status, data))
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
 }
 
 
@@ -144,4 +165,24 @@ const addRecord = ({token, record, success, fail}) => {
     })
 }
 
-export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, getRecords, addRecord};
+const updateRecord = ({token, record, success, fail}) => {
+    putToServer(`${URL}/record`, {record: record}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+const deleteRecord = ({token, record, success, fail}) => {
+    deleteFromServer(`${URL}/record`, {id: record.id}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, getRecords, addRecord, updateRecord, deleteRecord};

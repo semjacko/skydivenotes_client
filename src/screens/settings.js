@@ -50,10 +50,10 @@ const SettingsContainer = (props) => {
         });
     }
 
-    const handleUserChanges = (user) => {
+    const handleUserChanges = (attr) => {
         let newUserData = {
             ...props.globalState.user,
-            ...user
+            ...attr
         }
         
         updateUserData({
