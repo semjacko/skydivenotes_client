@@ -1,4 +1,4 @@
-import {StatusBar, View, Text, TextInput, ScrollView, TouchableHighlight} from 'react-native';
+import {StatusBar, View, Text, Alert, ScrollView, TouchableHighlight, TouchableOpacity} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
 import {date2USformat, date2SKformat} from '../components/functions';
@@ -9,7 +9,7 @@ import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
 import {updateUserData, getAssets} from '../server';
-import {LICENSES, WEIGHTS, ALTITUDES} from '../../constants';
+import {LICENSES, WEIGHTS, ALTITUDES, HINT_PERSONAL_SETTINGS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsContainer = (props) => {
@@ -31,17 +31,20 @@ const SettingsContainer = (props) => {
     });
 
     useEffect(() => {
-        getAssets({
-            token: props.globalState.token,
-            success: (data) => {
-                setParachutes(data['parachutes']);
-                setPlanes(data['planes']);
-                setDropzones(data['dropzones']);
-                setCategories(data['categories']);
-            },
-            fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getAssets({
+                token: props.globalState.token,
+                success: (data) => {
+                    setParachutes(data['parachutes']);
+                    setPlanes(data['planes']);
+                    setDropzones(data['dropzones']);
+                    setCategories(data['categories']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
         });
-    }, []);
+        return unsubscribe;
+    }, [props.navigation]);
 
     const toggleModal = (modalVisibility) => {
         setModals({
@@ -79,6 +82,12 @@ const SettingsContainer = (props) => {
                 onEdit={() => {toggleModal({isModalName: true});}}
             />
             <DataRow
+                label={'Email'}
+                value={props.globalState.user['email']}
+                icon={<MaterialIcons name="alternate-email" size={22} color={styleColors.labelColor}/>}
+                editable={false}
+            />
+            <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Váha'}
                 value={`${props.globalState.user['personalWeight']} kg`}
@@ -114,7 +123,12 @@ const SettingsContainer = (props) => {
             />
             {/* OSOBNE INFO end */}
             <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.faded}}></View>
-            <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold', marginTop: 15, marginBottom: 10}]}>Osobné nastavenia</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 15, marginBottom: 10}}>
+                <Text style={[styles.text1, {marginLeft: 10, fontWeight: 'bold'}]}>Osobné nastavenia</Text>
+                <TouchableOpacity style={{marginLeft: 10}} onPress={() => Alert.alert('Nápoveda', HINT_PERSONAL_SETTINGS, [{text: 'zatvoriť'}], {cancelable: true})}>
+                    <FontAwesome name="question-circle" size={24} color={styleColors.mainColor} />
+                </TouchableOpacity>
+            </View>
             <DataRow
                 label={'Padák'}
                 value={props.globalState.user['parachuteTitle']}

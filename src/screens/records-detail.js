@@ -8,12 +8,15 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {updateRecord, deleteRecord} from '../server';
+import {updateRecord, deleteRecord, getAssets} from '../server';
 import {ALTITUDES} from '../../constants';
 
 const RecordsDetailContainer = (props) => {
     const [record, setRecord] = useState(props.route?.params?.record);
-
+    const [parachutes, setParachutes] = useState([]);
+    const [planes, setPlanes] = useState([]);
+    const [dropzones, setDropzones] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [modals, setModals] = useState({
         isModalDate: false,
         isModalAltitude: false,
@@ -30,6 +33,22 @@ const RecordsDetailContainer = (props) => {
             ...modalVisibility
         });
     }
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getAssets({
+                token: props.globalState.token,
+                success: (data) => {
+                    setParachutes(data['parachutes']);
+                    setPlanes(data['planes']);
+                    setDropzones(data['dropzones']);
+                    setCategories(data['categories']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+        });
+        return unsubscribe;
+    }, [props.navigation]);
 
     useEffect(() => {
         // pridanie listeneru na event zo stack navigatora (kliknutie save vpravo hore)
@@ -61,6 +80,7 @@ const RecordsDetailContainer = (props) => {
     }, [record]); 
 
     return (
+        <>
         <ScrollView style={styles.page}>
             <StatusBar backgroundColor={styleColors.mainColor} barStyle="light-content"/>
             <DataRow
@@ -147,61 +167,61 @@ const RecordsDetailContainer = (props) => {
                     <MaterialIcons name={'speaker-notes'} size={22} color={'#000000'}/> 
                     <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Text style={styles.text1}>Poznámka</Text>
-                        <Text style={[styles.label, {color: styleColors.mainColor}]}>upraviť</Text>
+                        <Text style={[styles.label, {color: styleColors.mainColor}]}>zobraziť</Text>
                     </View>
                     <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor}/>
                 </View>
             </TouchableHighlight>
-            
-            <DatePicker
-                isVisible={modals.isModalDate}
-                hide={() => toggleModal({isModalDate: false})}
-                initialDate={record['date']}
-                onConfirm={(date) => {setRecord({...record, 'date': date});}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalAltitude}
-                hide={() => toggleModal({isModalAltitude: false})}
-                data={ALTITUDES}
-                value={ALTITUDES.find(e => e.value == record['altitude'])}
-                plus={false}
-                onConfirm={(obj) => {setRecord({...record, 'altitude': obj.value, 'timeFreeFall': altitude2seconds(obj.value)});}}
-            />
-            {/*
-            <ModalChoice
-                isVisible={modals.isModalParachute}
-                hide={() => toggleModal({isModalParachute: false})}
-                data={parachutes}
-                value={{id: props.globalState.user['parachuteID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({parachuteID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalCategory}
-                hide={() => toggleModal({isModalCategory: false})}
-                data={categories}
-                value={{id: props.globalState.user['categoryID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({categoryID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalPlane}
-                hide={() => toggleModal({isModalPlane: false})}
-                data={planes}
-                value={{id: props.globalState.user['planeID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({planeID: obj.id})}}
-            />
-            <ModalChoice
-                isVisible={modals.isModalDropzone}
-                hide={() => toggleModal({isModalDropzone: false})}
-                data={dropzones}
-                value={{id: props.globalState.user['dropzoneID']}}
-                plus={false}
-                onConfirm={(obj) => {handleUserChanges({dropzoneID: obj.id})}}
-            />
-            */}
-        </ScrollView> 
+        </ScrollView>
+                   
+        <DatePicker
+            isVisible={modals.isModalDate}
+            hide={() => toggleModal({isModalDate: false})}
+            initialDate={record['date']}
+            onConfirm={(date) => {setRecord({...record, 'date': date});}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalAltitude}
+            hide={() => toggleModal({isModalAltitude: false})}
+            data={ALTITUDES}
+            value={ALTITUDES.find(e => e.value == record['altitude'])}
+            plus={false}
+            onConfirm={(obj) => {setRecord({...record, 'altitude': obj.value, 'timeFreeFall': altitude2seconds(obj.value)});}}
+        />
+        
+        <ModalChoice
+            isVisible={modals.isModalParachute}
+            hide={() => toggleModal({isModalParachute: false})}
+            data={parachutes}
+            value={{id: record['parachuteID']}}
+            plus={false}
+            onConfirm={(obj) => {setRecord({...record, 'parachuteID': obj.id, 'parachuteTitle': obj.title})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalCategory}
+            hide={() => toggleModal({isModalCategory: false})}
+            data={categories}
+            value={{id: record['categoryID']}}
+            plus={false}
+            onConfirm={(obj) => {setRecord({...record, 'categoryID': obj.id, 'categoryTitle': obj.title})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalPlane}
+            hide={() => toggleModal({isModalPlane: false})}
+            data={planes}
+            value={{id: record['planeID']}}
+            plus={false}
+            onConfirm={(obj) => {setRecord({...record, 'planeID': obj.id, 'planeTitle': obj.title})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalDropzone}
+            hide={() => toggleModal({isModalDropzone: false})}
+            data={dropzones}
+            value={{id: record['dropzoneID']}}
+            plus={false}
+            onConfirm={(obj) => {setRecord({...record, 'dropzoneID': obj.id, 'dropzoneTitle': obj.title})}}
+        />
+        </> 
     );
 }
 

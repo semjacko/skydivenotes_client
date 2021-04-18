@@ -17,4 +17,8 @@ export const ALTITUDES = [
     {id: 4, value: 2000}, 
     {id: 5, value: 3000}, 
     {id: 6, value: 4000}
-]; 
+];
+
+export const HINT_PERSONAL_SETTINGS = 'Osobné nastavenia slúžia na rýchle pridávanie záznamov. Pri kliknutí veľkého pluska na obrazovke “Záznamy” sa pridá nový záznam s aktuálnym dátumom a týmito osobnými nastaveniami';
+
+export const ERROR_MSG = '';
