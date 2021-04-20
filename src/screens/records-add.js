@@ -1,7 +1,7 @@
 import {StatusBar, View, Text, Switch, DeviceEventEmitter, TouchableWithoutFeedback, ScrollView, TouchableHighlight} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles'
-import {altitude2seconds, date2USformat, date2SKformat} from '../components/functions';
+import {altitude2seconds, date2USformat, date2SKformat, findNewRecordNO} from '../components/functions';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import {DataRow} from '../components/data-row';
@@ -22,7 +22,8 @@ const RecordsAddContainer = (props) => {
         dropzoneTitle: props.globalState.user['dropzoneTitle'],
         planeID: props.globalState.user['planeID'], 
         planeTitle: props.globalState.user['planeTitle'],
-        date: '20201010', 
+        date: '20201010',
+        jumpNo: -1,
         altitude: props.globalState.user['altitude'], 
         timeFreeFall: altitude2seconds(props.globalState.user['altitude']), 
         cutaway: false, 
@@ -64,9 +65,11 @@ const RecordsAddContainer = (props) => {
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
             let dateRaw = new Date();
+            let date = date2USformat(`${dateRaw.getDate()}/${dateRaw.getMonth() + 1}/${dateRaw.getFullYear()}`);
             setRecord({
                 ...record,
-                date: date2USformat(`${dateRaw.getDate()}/${dateRaw.getMonth() + 1}/${dateRaw.getFullYear()}`)
+                date: date,
+                jumpNo: findNewRecordNO(props.globalState.records, date),
             });
             getParachutes({
                 token: props.globalState.token,
@@ -124,7 +127,7 @@ const RecordsAddContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Zoskok'}
-                value={`#${'UNDEFINED'}`}
+                value={`#${record.jumpNo}`}
                 icon={<FontAwesome5 name="hashtag" size={22} color={styleColors.labelColor} />}
                 editable={false}
             />
@@ -212,7 +215,7 @@ const RecordsAddContainer = (props) => {
         isVisible={modals.isModalDate}
         hide={() => toggleModal({isModalDate: false})}
         initialDate={record['date']}
-        onConfirm={(date) => {setRecord({...record, 'date': date});}}
+        onConfirm={(date) => {setRecord({...record, 'date': date, 'jumpNo': findNewRecordNO(props.globalState.records, date)})}}
         />
         <ModalChoice
             isVisible={modals.isModalAltitude}

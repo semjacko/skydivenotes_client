@@ -87,21 +87,15 @@ const handleLongText = (text, limit) => {
     return `${text.slice(0, limit - 3)}...`;
 }
 
-const findRecordNO = (records, srchRec) => {
+const findNewRecordNO = (records, date) => {
     let number = 1;
-    const srchIdIsGreaterThan = (rId) => {
-        if (typeof(srchRec.id) !== 'number') {
-            return true;
-        }
-        return srchRec.id > rId;
-    }
-    records.foreach((r) => {
-        if (r.date < srchRec.date || (r.date == srchRec.date && srchIdIsGreaterThan(r.id))) {
+    for (let i = 0; i < records.length; i++) {
+        if (records[i].date <= date) {
             number++;
         }
-    });
+    }
     return number;
 }
   
 
-export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData, seconds2HHMMSS, handleLongText, findRecordNO};
+export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData, seconds2HHMMSS, handleLongText, findNewRecordNO};
