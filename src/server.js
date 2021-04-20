@@ -125,9 +125,51 @@ const updateUserData = ({token, userData, success, fail}) => {
     });
 }
 
-const getAssets = ({token, success, fail}) => {
+const getParachutes = ({token, success, fail}) => {
     getFromServer({
-        url: `${URL}/asset`,
+        url: `${URL}/parachute`,
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const getCategories = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/category`,
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const getDropzones = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/dropzone`,
+        headers: {'Authorization': token},
+        callback: (status, data) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        } 
+    });
+}
+
+const getPlanes = ({token, success, fail}) => {
+    getFromServer({
+        url: `${URL}/plane`,
         headers: {'Authorization': token},
         callback: (status, data) => {
             if (status == 200) {
@@ -195,4 +237,8 @@ const deleteRecord = ({token, record, success, fail}) => {
     });
 }
 
-export {getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, getAssets, updateAsset, getRecords, addRecord, updateRecord, deleteRecord};
+export {
+    getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, 
+    getParachutes, getCategories, getDropzones, getPlanes,
+    updateAsset, 
+    getRecords, addRecord, updateRecord, deleteRecord};

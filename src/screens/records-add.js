@@ -8,7 +8,7 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {addRecord, getAssets} from '../server';
+import {addRecord, getParachutes, getPlanes, getDropzones, getCategories} from '../server';
 import {ALTITUDES} from '../../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -68,13 +68,30 @@ const RecordsAddContainer = (props) => {
                 ...record,
                 date: date2USformat(`${dateRaw.getDate()}/${dateRaw.getMonth() + 1}/${dateRaw.getFullYear()}`)
             });
-
-            getAssets({
+            getParachutes({
                 token: props.globalState.token,
                 success: (data) => {
                     setParachutes(data['parachutes']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getPlanes({
+                token: props.globalState.token,
+                success: (data) => {
                     setPlanes(data['planes']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getDropzones({
+                token: props.globalState.token,
+                success: (data) => {
                     setDropzones(data['dropzones']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getCategories({
+                token: props.globalState.token,
+                success: (data) => {
                     setCategories(data['categories']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}

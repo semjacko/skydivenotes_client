@@ -73,6 +73,35 @@ const getStoredData = async (key) => {
         // error reading value
     }
 }
+
+const handleLongText = (text, limit) => {
+    if (typeof(text) !== 'string' || limit < 0) {
+        return null;
+    }
+    if (text.length <= limit) {
+        return text;
+    }
+    if (limit < 4) {
+        return text.slice(0, limit);
+    }
+    return `${text.slice(0, limit - 3)}...`;
+}
+
+const findRecordNO = (records, srchRec) => {
+    let number = 1;
+    const srchIdIsGreaterThan = (rId) => {
+        if (typeof(srchRec.id) !== 'number') {
+            return true;
+        }
+        return srchRec.id > rId;
+    }
+    records.foreach((r) => {
+        if (r.date < srchRec.date || (r.date == srchRec.date && srchIdIsGreaterThan(r.id))) {
+            number++;
+        }
+    });
+    return number;
+}
   
 
-export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData, seconds2HHMMSS};
+export {date2SKformat, date2USformat, calcWingLoad, altitude2seconds, storeData, getStoredData, seconds2HHMMSS, handleLongText, findRecordNO};

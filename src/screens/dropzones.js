@@ -2,7 +2,7 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getAssets, updateAsset} from '../server';
+import {getDropzones} from '../server';
 import {connect} from 'react-redux';
 import {ModalText} from '../components/modal-text';
 
@@ -14,9 +14,11 @@ const DropzonesContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getAssets({
+            getDropzones({
                 token: props.globalState.token,
-                success: (data) => {setDropzones(data['dropzones']);},
+                success: (data) => {
+                    setDropzones(data['dropzones']);
+                },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
         });
@@ -24,19 +26,19 @@ const DropzonesContainer = (props) => {
     }, [props.navigation]);
 
     const handleChanges = (updatedDropzone) => {
-        updateAsset({
+        /*updateAsset({
             token: props.globalState.token,
             asset: updatedDropzone,
             success: (data) => {setDropzones(data['dropzones']);},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
-        });
+        });*/
     }
 
     const renderItem = ({item}) => {
         return (
             <View style={styles.personalItem}>
                 <Text style={styles.text1}>{item.title}</Text>
-                <Text style={{position: 'absolute', bottom: 5, right: 5}}>Počet: {'UNDEFINED'}</Text>
+                <Text style={{position: 'absolute', bottom: 5, right: 5}}>Počet: {typeof(item.usedCount) === 'number' ? item.usedCount : 0}</Text>
                 <TouchableOpacity
                     style={{position: 'absolute', top: 5, right: 5}}
                     onPress={() => {

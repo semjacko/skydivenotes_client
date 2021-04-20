@@ -8,7 +8,7 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {updateUserData, getAssets} from '../server';
+import {updateUserData, getParachutes, getPlanes, getDropzones, getCategories} from '../server';
 import {LICENSES, WEIGHTS, ALTITUDES, HINT_PERSONAL_SETTINGS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -32,12 +32,31 @@ const SettingsContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getAssets({
+            getParachutes({
                 token: props.globalState.token,
                 success: (data) => {
+                    console.log(data['parachutes']);
                     setParachutes(data['parachutes']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getPlanes({
+                token: props.globalState.token,
+                success: (data) => {
                     setPlanes(data['planes']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getDropzones({
+                token: props.globalState.token,
+                success: (data) => {
                     setDropzones(data['dropzones']);
+                },
+                fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
+            });
+            getCategories({
+                token: props.globalState.token,
+                success: (data) => {
                     setCategories(data['categories']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
