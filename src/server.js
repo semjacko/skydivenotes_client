@@ -206,8 +206,8 @@ const getRecords = ({token, success, fail}) => {
     });
 }
 
-const addRecord = ({token, record, success, fail}) => {
-    postToServer(`${URL}/record`, {record: record}, {'Authorization': token}, (status, data) => {
+const addRecord = ({token, record, quantity, success, fail}) => {
+    postToServer(`${URL}/record`, {record: record, quantity: quantity}, {'Authorization': token}, (status, data) => {
         if (status == 200) {
             data.sort((a, b) => b['jumpNumber'] - a['jumpNumber']);
             success(data);

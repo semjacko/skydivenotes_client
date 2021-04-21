@@ -9,7 +9,7 @@ import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
 import {addRecord, getParachutes, getPlanes, getDropzones, getCategories} from '../server';
-import {ALTITUDES} from '../../constants';
+import {ALTITUDES, WEIGHTS} from '../../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const RecordsAddContainer = (props) => {
@@ -29,6 +29,7 @@ const RecordsAddContainer = (props) => {
         cutaway: false, 
         note: '',
     });
+    const [quantity, setQuantity] = useState(1);
     const [parachutes, setParachutes] = useState([]);
     const [planes, setPlanes] = useState([]);
     const [dropzones, setDropzones] = useState([]);
@@ -41,6 +42,7 @@ const RecordsAddContainer = (props) => {
         isModalPlane: false,
         isModalDropzone: false,
         isModalNote: false,
+        isModalQuantity: false,
     });
 
     const toggleModal = (modalVisibility) => {
@@ -54,6 +56,7 @@ const RecordsAddContainer = (props) => {
         addRecord({
             token: props.globalState.token,
             record: record,
+            quantity: quantity,
             success: (data) => {
                 props.dispatch({type: 'UPDATE_RECORDS', records: data});
                 props.navigation.goBack();
@@ -177,17 +180,20 @@ const RecordsAddContainer = (props) => {
                 onEdit={() => {toggleModal({isModalDropzone: true});}}
             />
             <View style={{height: 1, alignSelf: 'stretch', backgroundColor: styleColors.faded}}></View>
-            <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={styles.text1}>Odhod</Text>
-                <Switch
-                    style={{transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }]}}
-                    trackColor={{true: styleColors.mainColor, false: styleColors.faded}}
-                    thumbColor={styleColors.textColorSpecial}
-                    onValueChange={(value) => {
-                        setRecord({...record, 'cutaway': value});
-                    }}
-                    value={record['cutaway'] == 1}
-                />
+            <View style={styles.editableRow}>
+                <FontAwesome name={'cut'} size={22} color={'#000000'}/>
+                <View style={{flex: 1, marginLeft: 20, marginRight: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <Text style={styles.text1}>Odhod</Text>
+                    <Switch
+                        style={{transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }]}}
+                        trackColor={{true: styleColors.mainColor, false: styleColors.faded}}
+                        thumbColor={styleColors.textColorSpecial}
+                        onValueChange={(value) => {
+                            setRecord({...record, 'cutaway': value});
+                        }}
+                        value={record['cutaway'] == 1}
+                    />
+                </View>
             </View>
             <TouchableHighlight 
                 activeOpacity={0.6} 
@@ -203,6 +209,16 @@ const RecordsAddContainer = (props) => {
                     <MaterialIcons name="navigate-next" size={22} color={styleColors.mainColor}/>
                 </View>
             </TouchableHighlight>
+            <View style={{alignSelf: 'stretch', marginVertical: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end'}}>
+                <Text style={styles.text2}>Pridať tento zoskok</Text>
+                <TouchableOpacity 
+                    style={{borderBottomWidth: 1, borderColor: styleColors.mainColor, paddingHorizontal: 8, marginHorizontal: 8}}
+                    onPress={() => {toggleModal({isModalQuantity: true});}}
+                >
+                    <Text style={[styles.text3, {color: styleColors.labelColor}]}>{quantity}</Text>
+                </TouchableOpacity>   
+                <Text style={styles.text2}>krát</Text>
+            </View>
             <TouchableOpacity 
                 style={{marginVertical: 30, marginHorizontal: 100, backgroundColor: styleColors.mainColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 5}} 
                 onPress={onAddPress}
@@ -256,6 +272,14 @@ const RecordsAddContainer = (props) => {
             value={{id: record['dropzoneID']}}
             plus={false}
             onConfirm={(obj) => {setRecord({...record, 'dropzoneID': obj.id, 'dropzoneTitle': obj.title})}}
+        />
+        <ModalChoice
+            isVisible={modals.isModalQuantity}
+            hide={() => toggleModal({isModalQuantity: false})}
+            data={WEIGHTS}
+            value={WEIGHTS[quantity - 1]}
+            plus={false}
+            onConfirm={(obj) => {setQuantity(obj.value)}}
         />
         </>
     );

@@ -13,6 +13,7 @@ import {ALTITUDES} from '../../constants';
 
 const RecordsDetailContainer = (props) => {
     const [record, setRecord] = useState(props.route?.params?.record);
+    const [jumpNumber, setJumpNumber] = useState(props.route?.params?.record?.jumpNumber);
     const [parachutes, setParachutes] = useState([]);
     const [planes, setPlanes] = useState([]);
     const [dropzones, setDropzones] = useState([]);
@@ -92,7 +93,10 @@ const RecordsDetailContainer = (props) => {
         updateRecord({
             token: props.globalState.token,
             record: record,
-            success: (data) => {props.dispatch({type: 'UPDATE_RECORDS', records: data});},
+            success: (data) => {
+                props.dispatch({type: 'UPDATE_RECORDS', records: data});
+                setJumpNumber(data.find((e) => e.id == record.id).jumpNumber)
+            },
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
     }, [record]); 
@@ -111,7 +115,7 @@ const RecordsDetailContainer = (props) => {
             <DataRow
                 style={{display: 'flex', flex: 1}}
                 label={'Zoskok'}
-                value={`#${'UNDEFINED'}`}
+                value={`#${jumpNumber}`}
                 icon={<FontAwesome5 name="hashtag" size={22} color={styleColors.labelColor} />}
                 editable={false}
             />
