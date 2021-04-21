@@ -2,7 +2,7 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getCategories} from '../server';
+import {getCategories, updateCategory} from '../server';
 import {connect} from 'react-redux';
 import {ModalText} from '../components/modal-text';
 
@@ -26,12 +26,12 @@ const CategoriesContainer = (props) => {
     }, [props.navigation]);
 
     const handleChanges = (updatedCategory) => {
-        /*updateAsset({
+        updateCategory({
             token: props.globalState.token,
-            asset: updatedCategory,
+            category: updatedCategory,
             success: (data) => {setCategories(data['categories']);},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
-        });*/
+        });
     }
 
     const renderItem = ({item}) => {

@@ -53,6 +53,7 @@ const ProfileContainer = (props) => {
             <View style={styles.profileInfo}>
                 {/* LICENCIA begin */}
                 <View style={styles.circle}>
+                    <Text style={[styles.label, {position: 'absolute', top: 15}]}>Licencia</Text>
                     <Text style={[styles.text4, {color: styleColors.textColorSpecial, fontWeight: 'bold'}]}>{props.globalState.user['license']}</Text>
                 </View>
                 {/* LICENCIA end */}

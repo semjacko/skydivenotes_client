@@ -63,9 +63,10 @@ const RecordsContainer = (props) => {
                     <Text style={[styles.text1, {position: 'absolute', top: 5, left: 10}]}>#{item['jumpNumber']}</Text>
                     <Text style={{position: 'absolute', top: 10, right: 10}}>{date2SKformat(item['date'])}</Text>
                     <Text style={{position: 'absolute', bottom: 10, right: 10}}>{item['dropzoneTitle']}</Text>
+                    {item['cutaway'] == 1 && <FontAwesome name={'cut'} size={18} color={styleColors.red} style={{position: 'absolute', bottom: 10, left: 10}}/>}
                     { /* ABSOLUTNE POZICIE end */}
                     { /* INFO O ZOSKOKU begin */}
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
                         <MaterialIcons name={'category'} size={18} color={'black'}/>
                         <Text style={{marginLeft: 5}}>{item['categoryTitle']}</Text>
                         <FontAwesome style={{marginLeft:30}} name="info-circle" size={18} color="black"/>
@@ -75,13 +76,9 @@ const RecordsContainer = (props) => {
                         <MaterialCommunityIcons name="parachute" size={18} color={'black'}/>
                         <Text style={{marginLeft: 5}}>{item['parachuteTitle']}</Text>
                     </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 15}}>
                         <MaterialCommunityIcons name={'airplane'} size={18} color={'black'} />
                         <Text style={{marginLeft: 5}}>{item['planeTitle']}</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <FontAwesome name={'cut'} size={18} color={'black'} />
-                        <Text style={{marginLeft: 5}}>{item.cutaway ? 'Áno' : 'Nie'}</Text>
                     </View>
                     { /* INFO O ZOSKOKU end */}
                 </View>

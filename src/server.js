@@ -181,8 +181,38 @@ const getPlanes = ({token, success, fail}) => {
     });
 }
 
-const updateAsset = ({token, asset, success, fail}) => {
-    putToServer(`${URL}/asset`, {asset: asset}, {'Authorization': token}, (status, data) => {
+const updateParachute = ({token, parachute, success, fail}) => {
+    putToServer(`${URL}/parachute`, {parachute: parachute}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+const updateCategory = ({token, category, success, fail}) => {
+    putToServer(`${URL}/category`, {category: category}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+const updateDropzone = ({token, dropzone, success, fail}) => {
+    putToServer(`${URL}/dropzone`, {dropzone: dropzone}, {'Authorization': token}, (status, data) => {
+        if (status == 200) {
+            success(data);
+        } else {
+            fail();
+        }
+    });
+}
+
+const updatePlane = ({token, plane, success, fail}) => {
+    putToServer(`${URL}/plane`, {plane: plane}, {'Authorization': token}, (status, data) => {
         if (status == 200) {
             success(data);
         } else {
@@ -240,5 +270,5 @@ const deleteRecord = ({token, record, success, fail}) => {
 export {
     getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, 
     getParachutes, getCategories, getDropzones, getPlanes,
-    updateAsset, 
+    updateParachute, updateCategory, updateDropzone, updatePlane, 
     getRecords, addRecord, updateRecord, deleteRecord};
