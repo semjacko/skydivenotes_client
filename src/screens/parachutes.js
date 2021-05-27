@@ -2,7 +2,7 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getParachutes, updateParachute} from '../server';
+import {getData, updateData} from '../server';
 import {connect} from 'react-redux';
 import {ModalText} from '../components/modal-text';
 
@@ -14,7 +14,8 @@ const ParachutesContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getParachutes({
+            getData({
+                route: 'parachute',
                 token: props.globalState.token,
                 success: (data) => {
                     setParachutes(data['parachutes']);
@@ -26,9 +27,10 @@ const ParachutesContainer = (props) => {
     }, [props.navigation]);
     
     const handleChanges = (updatedParachute) => {
-        updateParachute({
+        updateData({
+            route: 'parachute',
             token: props.globalState.token,
-            parachute: updatedParachute,
+            sendData: {parachute: updatedParachute},
             success: (data) => {setParachutes(data['parachutes']);},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });

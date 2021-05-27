@@ -4,7 +4,7 @@ import {styles, styleColors} from '../styles';
 import {calcWingLoad, date2SKformat, seconds2HHMMSS} from '../components/functions';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {connect} from 'react-redux';
-import {getUserData} from '../server';
+import {getData} from '../server';
 
 const LabeledValue = ({label, value, align}) => {
     return (
@@ -24,7 +24,8 @@ const ProfileContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getUserData({
+            getData({
+                route: 'user',
                 token: props.globalState.token,
                 success: (userData) => {
                     setCalculator({...calculator, weight: userData['personalWeight']});

@@ -8,7 +8,7 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {addRecord, getParachutes, getPlanes, getDropzones, getCategories} from '../server';
+import {addRecord, getData} from '../server';
 import {ALTITUDES, WEIGHTS} from '../../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -74,28 +74,32 @@ const RecordsAddContainer = (props) => {
                 date: date,
                 jumpNo: findNewRecordNO(props.globalState.records, date),
             });
-            getParachutes({
+            getData({
+                route: 'parachute',
                 token: props.globalState.token,
                 success: (data) => {
                     setParachutes(data['parachutes']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getPlanes({
+            getData({
+                route: 'plane',
                 token: props.globalState.token,
                 success: (data) => {
                     setPlanes(data['planes']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getDropzones({
+            getData({
+                route: 'dropzone',
                 token: props.globalState.token,
                 success: (data) => {
                     setDropzones(data['dropzones']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getCategories({
+            getData({
+                route: 'category',
                 token: props.globalState.token,
                 success: (data) => {
                     setCategories(data['categories']);

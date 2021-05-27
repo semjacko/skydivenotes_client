@@ -2,7 +2,7 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getCategories, updateCategory} from '../server';
+import {getData, updateData} from '../server';
 import {connect} from 'react-redux';
 import {ModalText} from '../components/modal-text';
 
@@ -14,7 +14,8 @@ const CategoriesContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getCategories({
+            getData({
+                route: 'category',
                 token: props.globalState.token,
                 success: (data) => {
                     setCategories(data['categories']);
@@ -26,9 +27,10 @@ const CategoriesContainer = (props) => {
     }, [props.navigation]);
 
     const handleChanges = (updatedCategory) => {
-        updateCategory({
+        updateData({
+            route: 'category',
             token: props.globalState.token,
-            category: updatedCategory,
+            sendData: {category: updatedCategory},
             success: (data) => {setCategories(data['categories']);},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });

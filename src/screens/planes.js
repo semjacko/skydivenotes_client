@@ -2,7 +2,7 @@ import {StatusBar, View, Text, TextInput, Keyboard, TouchableWithoutFeedback, Sc
 import React, {useState, useEffect} from 'react';
 import {styles, styleColors} from '../styles';
 import {MaterialIcons} from '@expo/vector-icons';
-import {getPlanes, updatePlane} from '../server';
+import {getData, updateData} from '../server';
 import {connect} from 'react-redux';
 import {ModalText} from '../components/modal-text';
 
@@ -14,7 +14,8 @@ const PlanesContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getPlanes({
+            getData({
+                route: 'plane',
                 token: props.globalState.token,
                 success: (data) => {
                     setPlanes(data['planes']);
@@ -26,9 +27,10 @@ const PlanesContainer = (props) => {
     }, [props.navigation]);;
 
     const handleChanges = (updatedPlane) => {
-        updatePlane({
+        updateData({
+            route: 'plane',
             token: props.globalState.token,
-            plane: updatedPlane,
+            sendData: {plane: updatedPlane},
             success: (data) => {setPlanes(data['planes']);},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });

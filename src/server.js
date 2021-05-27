@@ -3,21 +3,6 @@ import {Alert} from 'react-native';
 import { call } from 'react-native-reanimated';
 import {URL} from '../constants';
 
-const getFromServer = ({url, headers, callback}) => {
-    return (
-        fetch(url, {method: 'GET', headers: headers})
-            .then(response => {
-                let statusCode = response.status;
-                let data = null;
-                if (statusCode == 200) {
-                    data = response.json();
-                }
-                return Promise.all([statusCode, data]);
-            })
-            .then(([status, data]) => callback(status, data))
-            .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
-    );
-}
 
 const postToServer = (url, sendData, headers, callback) => {
     return (
@@ -41,28 +26,6 @@ const postToServer = (url, sendData, headers, callback) => {
             .then(([status, data]) => callback(status, data))
             .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
     );
-}
-
-const putToServer = (url, sendData, headers, callback) => {
-    fetch(url, {
-        method: 'PUT',
-        headers: {
-            ...headers,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sendData)
-    })
-        .then(response => {
-            let statusCode = response.status;
-            let data = null;
-            if (statusCode == 200) {
-                data = response.json();
-            }
-            return Promise.all([statusCode, data]);
-        })
-        .then(([status, data]) => callback(status, data))
-        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
 }
 
 const deleteFromServer = (url, sendData, headers, callback) => {
@@ -89,151 +52,85 @@ const deleteFromServer = (url, sendData, headers, callback) => {
 
 
 const signInUser = ({email, password, success, fail}) => {
-    getFromServer({
-        url: `${URL}/token?email=${email}&password=${password}`, 
-        callback: (status, data) => {
+    fetch(`${URL}/token?email=${email}&password=${password}`, {method: 'GET'})
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
+            }
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => {
             if (status == 200) {
                 success(data['token']);
             } else {
                 fail(status);
             }
-        }
-    });
+        })
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
 }
 
-const getUserData = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/user`, 
-        headers: {'Authorization': token},
-        callback: (status, data) => {
+const getData = ({route, token, success, fail}) => {
+    fetch(`${URL}/${route}`, {method: 'GET', headers: {'Authorization': token},})
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
+            }
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => {
             if (status == 200) {
                 success(data);
             } else {
                 fail();
             }
-        } 
-    });
+
+        })
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]));
 }
 
-const updateUserData = ({token, userData, success, fail}) => {
-    putToServer(`${URL}/user`, {user: userData}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
-}
-
-const getParachutes = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/parachute`,
-        headers: {'Authorization': token},
-        callback: (status, data) => {
+const updateData = ({route, token, sendData, success, fail}) => {
+    fetch(`${URL}/${route}`, {method: 'PUT', headers: {'Authorization': token, 'Accept': 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify(sendData)})
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
+            }
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => {
             if (status == 200) {
                 success(data);
             } else {
                 fail();
             }
-        } 
-    });
+        })
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]));
 }
 
-const getCategories = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/category`,
-        headers: {'Authorization': token},
-        callback: (status, data) => {
-            if (status == 200) {
-                success(data);
-            } else {
-                fail();
+const getRecords = ({token, success, fail}) => { 
+    fetch(`${URL}/record?limit=10`, {method: 'GET', headers: {'Authorization': token}})
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
             }
-        } 
-    });
-}
-
-const getDropzones = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/dropzone`,
-        headers: {'Authorization': token},
-        callback: (status, data) => {
-            if (status == 200) {
-                success(data);
-            } else {
-                fail();
-            }
-        } 
-    });
-}
-
-const getPlanes = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/plane`,
-        headers: {'Authorization': token},
-        callback: (status, data) => {
-            if (status == 200) {
-                success(data);
-            } else {
-                fail();
-            }
-        } 
-    });
-}
-
-const updateParachute = ({token, parachute, success, fail}) => {
-    putToServer(`${URL}/parachute`, {parachute: parachute}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
-}
-
-const updateCategory = ({token, category, success, fail}) => {
-    putToServer(`${URL}/category`, {category: category}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
-}
-
-const updateDropzone = ({token, dropzone, success, fail}) => {
-    putToServer(`${URL}/dropzone`, {dropzone: dropzone}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
-}
-
-const updatePlane = ({token, plane, success, fail}) => {
-    putToServer(`${URL}/plane`, {plane: plane}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
-}
-
-const getRecords = ({token, success, fail}) => {
-    getFromServer({
-        url: `${URL}/record`,
-        headers: {'Authorization': token},
-        callback: (status, data) => {
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => {
             if (status == 200) {
                 data.sort((a, b) => b['jumpNumber'] - a['jumpNumber']);
                 success(data);
             } else {
                 fail();
             }
-        } 
-    });
+        })
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
 }
 
 const addRecord = ({token, record, quantity, success, fail}) => {
@@ -248,13 +145,23 @@ const addRecord = ({token, record, quantity, success, fail}) => {
 }
 
 const updateRecord = ({token, record, success, fail}) => {
-    putToServer(`${URL}/record`, {record: record}, {'Authorization': token}, (status, data) => {
-        if (status == 200) {
-            success(data);
-        } else {
-            fail();
-        }
-    });
+    fetch(`${URL}/record`, {method: 'PUT', headers: {'Authorization': token, 'Accept': 'application/json', 'Content-Type': 'application/json'}, body: JSON.stringify(record)})
+        .then(response => {
+            let statusCode = response.status;
+            let data = null;
+            if (statusCode == 200) {
+                data = response.json();
+            }
+            return Promise.all([statusCode, data]);
+        })
+        .then(([status, data]) => {
+            if (status == 200) {
+                success(data);
+            } else {
+                fail();
+            }
+        })
+        .catch((err) => Alert.alert('Chyba!', 'Niečo sa pokazilo', [{text: 'Ok'}]))
 }
 
 const deleteRecord = ({token, record, success, fail}) => {
@@ -268,7 +175,12 @@ const deleteRecord = ({token, record, success, fail}) => {
 }
 
 export {
-    getFromServer, postToServer, putToServer, signInUser, getUserData, updateUserData, 
-    getParachutes, getCategories, getDropzones, getPlanes,
-    updateParachute, updateCategory, updateDropzone, updatePlane, 
-    getRecords, addRecord, updateRecord, deleteRecord};
+    postToServer,
+    signInUser, 
+    getData, 
+    updateData, 
+    getRecords, 
+    addRecord, 
+    updateRecord, 
+    deleteRecord
+};

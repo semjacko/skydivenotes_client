@@ -8,7 +8,7 @@ import {DataRow} from '../components/data-row';
 import {ModalText} from '../components/modal-text';
 import {ModalChoice} from '../components/modal-choice';
 import {DatePicker} from '../components/date-picker';
-import {updateUserData, getParachutes, getPlanes, getDropzones, getCategories} from '../server';
+import {updateData, getData} from '../server';
 import {LICENSES, WEIGHTS, ALTITUDES, HINT_PERSONAL_SETTINGS} from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -32,29 +32,32 @@ const SettingsContainer = (props) => {
 
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('focus', () => {
-            getParachutes({
+            getData({
+                route: 'parachute',
                 token: props.globalState.token,
                 success: (data) => {
-                    console.log(data['parachutes']);
                     setParachutes(data['parachutes']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getPlanes({
+            getData({
+                route: 'plane',
                 token: props.globalState.token,
                 success: (data) => {
                     setPlanes(data['planes']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getDropzones({
+            getData({
+                route: 'dropzone',
                 token: props.globalState.token,
                 success: (data) => {
                     setDropzones(data['dropzones']);
                 },
                 fail: () => {Alert.alert('Nepodarilo sa načítať!', 'Údaje sa nepodarilo načítať. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
             });
-            getCategories({
+            getData({
+                route: 'category',
                 token: props.globalState.token,
                 success: (data) => {
                     setCategories(data['categories']);
@@ -78,9 +81,10 @@ const SettingsContainer = (props) => {
             ...attr
         }
         
-        updateUserData({
+        updateData({
+            route: 'user',
             token: props.globalState.token,
-            userData: newUserData,
+            sendData: {user: newUserData},
             success: (data) => {props.dispatch({type: 'UPDATE_USER', user: data});},
             fail: () => {Alert.alert('Odoslanie na server zlyhalo!', 'Údaje sa nepodarilo odoslať na server. Skontrolujte prosím vaše internetové pripojenie', [{text: 'Ok'}]);}
         });
